@@ -1,6 +1,5 @@
 part of '../pay_pal_service_v2.dart';
 
-
 typedef PayPalGetApprovalUrlV2 = Future<PaypalPaymentModelV2> Function();
 
 class PaypalPaymentModelV2 extends PayPalBaseModel {

@@ -1,4 +1,5 @@
 part of '../paypal_service_v1.dart';
+
 class PayPalExecutePaymentModelV1 extends PayPalBaseModel {
   final dynamic data; // PayPal response body
 

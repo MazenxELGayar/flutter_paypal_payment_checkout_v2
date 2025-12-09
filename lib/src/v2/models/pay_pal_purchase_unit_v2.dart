@@ -16,19 +16,19 @@ class PayPalAmountV2 {
   });
 
   Map<String, dynamic> toJson() => {
-    "currency_code": currency,
-    "value": value.toString(),
-    "breakdown": {
-      "item_total": {
         "currency_code": currency,
-        "value": itemTotal.toString(),
-      },
-      "tax_total": {
-        "currency_code": currency,
-        "value": taxTotal.toString(),
-      },
-    }
-  };
+        "value": value.toString(),
+        "breakdown": {
+          "item_total": {
+            "currency_code": currency,
+            "value": itemTotal.toString(),
+          },
+          "tax_total": {
+            "currency_code": currency,
+            "value": taxTotal.toString(),
+          },
+        }
+      };
 }
 
 class PaypalTransactionV2Item {
@@ -59,23 +59,23 @@ class PaypalTransactionV2Item {
   });
 
   Map<String, dynamic> toJson() => {
-    "name": name,
-    "description": description,
-    "unit_amount": {
-      "currency_code": currency,
-      "value": unitAmount.toString(),
-    },
-    "quantity": quantity.toString(),
-    "category": category.value,
-    "sku": sku,
-    if (imageUrl != null) "image_url": imageUrl,
-    if (url != null) "url": url,
-    if (upcCode != null)
-      "upc": {
-        "type": upcType ?? "UPC-A",
-        "code": upcCode,
-      },
-  };
+        "name": name,
+        "description": description,
+        "unit_amount": {
+          "currency_code": currency,
+          "value": unitAmount.toString(),
+        },
+        "quantity": quantity.toString(),
+        "category": category.value,
+        "sku": sku,
+        if (imageUrl != null) "image_url": imageUrl,
+        if (url != null) "url": url,
+        if (upcCode != null)
+          "upc": {
+            "type": upcType ?? "UPC-A",
+            "code": upcCode,
+          },
+      };
 }
 
 /// Define this according to your existing shipping model
@@ -100,18 +100,18 @@ class PayPalShippingAddressV2 {
   });
 
   Map<String, dynamic> toJson() => {
-    "name": {
-      "full_name": name,
-    },
-    "address": {
-      "address_line_1": addressLine1,
-      if (addressLine2 != null) "address_line_2": addressLine2,
-      "admin_area_2": city,
-      "admin_area_1": state,
-      "postal_code": postalCode,
-      "country_code": countryCode,
-    },
-  };
+        "name": {
+          "full_name": name,
+        },
+        "address": {
+          "address_line_1": addressLine1,
+          if (addressLine2 != null) "address_line_2": addressLine2,
+          "admin_area_2": city,
+          "admin_area_1": state,
+          "postal_code": postalCode,
+          "country_code": countryCode,
+        },
+      };
 }
 
 class PayPalPurchaseUnitV2 {
@@ -128,9 +128,9 @@ class PayPalPurchaseUnitV2 {
   });
 
   Map<String, dynamic> toJson() => {
-    if (invoiceId != null) "invoice_id": invoiceId,
-    "amount": amount.toJson(),
-    "items": items.map((e) => e.toJson()).toList(),
-    if (shippingAddress != null) "shipping": shippingAddress!.toJson(),
-  };
+        if (invoiceId != null) "invoice_id": invoiceId,
+        "amount": amount.toJson(),
+        "items": items.map((e) => e.toJson()).toList(),
+        if (shippingAddress != null) "shipping": shippingAddress!.toJson(),
+      };
 }

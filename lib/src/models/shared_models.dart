@@ -36,6 +36,4 @@ typedef PayPalOnError = dynamic Function(PayPalErrorModel error);
 
 typedef PayPalGetAccessToken = Future<String> Function();
 
-
-
 typedef PayPalTransactionsFunction = Map<String, dynamic> Function();

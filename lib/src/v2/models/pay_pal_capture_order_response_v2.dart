@@ -22,12 +22,12 @@ class PayPalCaptureOrderResponse {
       status: json['status'] as String,
       paymentSource: json['payment_source'] != null
           ? PayPalCapturePaymentSource.fromJson(
-        json['payment_source'] as Map<String, dynamic>,
-      )
+              json['payment_source'] as Map<String, dynamic>,
+            )
           : null,
       purchaseUnits: (json['purchase_units'] as List<dynamic>? ?? [])
           .map((e) =>
-          PayPalCapturePurchaseUnit.fromJson(e as Map<String, dynamic>))
+              PayPalCapturePurchaseUnit.fromJson(e as Map<String, dynamic>))
           .toList(),
       payer: json['payer'] != null
           ? PayPalPayer.fromJson(json['payer'] as Map<String, dynamic>)
@@ -39,13 +39,13 @@ class PayPalCaptureOrderResponse {
   }
 
   Map<String, dynamic> toJson() => {
-    'id': id,
-    'status': status,
-    if (paymentSource != null) 'payment_source': paymentSource!.toJson(),
-    'purchase_units': purchaseUnits.map((e) => e.toJson()).toList(),
-    if (payer != null) 'payer': payer!.toJson(),
-    'links': links.map((e) => e.toJson()).toList(),
-  };
+        'id': id,
+        'status': status,
+        if (paymentSource != null) 'payment_source': paymentSource!.toJson(),
+        'purchase_units': purchaseUnits.map((e) => e.toJson()).toList(),
+        if (payer != null) 'payer': payer!.toJson(),
+        'links': links.map((e) => e.toJson()).toList(),
+      };
 }
 
 /// ---------------- PAYMENT SOURCE (paypal) ----------------
@@ -59,15 +59,15 @@ class PayPalCapturePaymentSource {
     return PayPalCapturePaymentSource(
       paypal: json['paypal'] != null
           ? PayPalPaymentSourcePaypal.fromJson(
-        json['paypal'] as Map<String, dynamic>,
-      )
+              json['paypal'] as Map<String, dynamic>,
+            )
           : null,
     );
   }
 
   Map<String, dynamic> toJson() => {
-    if (paypal != null) 'paypal': paypal!.toJson(),
-  };
+        if (paypal != null) 'paypal': paypal!.toJson(),
+      };
 }
 
 class PayPalPaymentSourcePaypal {
@@ -92,10 +92,10 @@ class PayPalPaymentSourcePaypal {
   }
 
   Map<String, dynamic> toJson() => {
-    if (name != null) 'name': name!.toJson(),
-    if (emailAddress != null) 'email_address': emailAddress,
-    if (accountId != null) 'account_id': accountId,
-  };
+        if (name != null) 'name': name!.toJson(),
+        if (emailAddress != null) 'email_address': emailAddress,
+        if (accountId != null) 'account_id': accountId,
+      };
 }
 
 /// ---------------- PURCHASE UNIT + SHIPPING + PAYMENTS ----------------
@@ -119,17 +119,17 @@ class PayPalCapturePurchaseUnit {
           : null,
       payments: json['payments'] != null
           ? PayPalPurchaseUnitPayments.fromJson(
-        json['payments'] as Map<String, dynamic>,
-      )
+              json['payments'] as Map<String, dynamic>,
+            )
           : null,
     );
   }
 
   Map<String, dynamic> toJson() => {
-    if (referenceId != null) 'reference_id': referenceId,
-    if (shipping != null) 'shipping': shipping!.toJson(),
-    if (payments != null) 'payments': payments!.toJson(),
-  };
+        if (referenceId != null) 'reference_id': referenceId,
+        if (shipping != null) 'shipping': shipping!.toJson(),
+        if (payments != null) 'payments': payments!.toJson(),
+      };
 }
 
 class PayPalShipping {
@@ -146,8 +146,8 @@ class PayPalShipping {
   }
 
   Map<String, dynamic> toJson() => {
-    if (address != null) 'address': address!.toJson(),
-  };
+        if (address != null) 'address': address!.toJson(),
+      };
 }
 
 class PayPalAddress {
@@ -179,13 +179,13 @@ class PayPalAddress {
   }
 
   Map<String, dynamic> toJson() => {
-    if (addressLine1 != null) 'address_line_1': addressLine1,
-    if (addressLine2 != null) 'address_line_2': addressLine2,
-    if (adminArea2 != null) 'admin_area_2': adminArea2,
-    if (adminArea1 != null) 'admin_area_1': adminArea1,
-    if (postalCode != null) 'postal_code': postalCode,
-    if (countryCode != null) 'country_code': countryCode,
-  };
+        if (addressLine1 != null) 'address_line_1': addressLine1,
+        if (addressLine2 != null) 'address_line_2': addressLine2,
+        if (adminArea2 != null) 'admin_area_2': adminArea2,
+        if (adminArea1 != null) 'admin_area_1': adminArea1,
+        if (postalCode != null) 'postal_code': postalCode,
+        if (countryCode != null) 'country_code': countryCode,
+      };
 }
 
 class PayPalPurchaseUnitPayments {
@@ -202,8 +202,8 @@ class PayPalPurchaseUnitPayments {
   }
 
   Map<String, dynamic> toJson() => {
-    'captures': captures.map((e) => e.toJson()).toList(),
-  };
+        'captures': captures.map((e) => e.toJson()).toList(),
+      };
 }
 
 /// ---------------- CAPTURE + MONEY + SELLER PROTECTION ----------------
@@ -240,15 +240,15 @@ class PayPalCapture {
       amount: PayPalMoney.fromJson(json['amount'] as Map<String, dynamic>),
       sellerProtection: json['seller_protection'] != null
           ? PayPalSellerProtection.fromJson(
-        json['seller_protection'] as Map<String, dynamic>,
-      )
+              json['seller_protection'] as Map<String, dynamic>,
+            )
           : null,
       finalCapture: json['final_capture'] as bool?,
       disbursementMode: json['disbursement_mode'] as String?,
       sellerReceivableBreakdown: json['seller_receivable_breakdown'] != null
           ? PayPalSellerReceivableBreakdown.fromJson(
-        json['seller_receivable_breakdown'] as Map<String, dynamic>,
-      )
+              json['seller_receivable_breakdown'] as Map<String, dynamic>,
+            )
           : null,
       createTime: json['create_time'] != null
           ? DateTime.parse(json['create_time'] as String)
@@ -263,19 +263,19 @@ class PayPalCapture {
   }
 
   Map<String, dynamic> toJson() => {
-    'id': id,
-    'status': status,
-    'amount': amount.toJson(),
-    if (sellerProtection != null)
-      'seller_protection': sellerProtection!.toJson(),
-    if (finalCapture != null) 'final_capture': finalCapture,
-    if (disbursementMode != null) 'disbursement_mode': disbursementMode,
-    if (sellerReceivableBreakdown != null)
-      'seller_receivable_breakdown': sellerReceivableBreakdown!.toJson(),
-    if (createTime != null) 'create_time': createTime!.toIso8601String(),
-    if (updateTime != null) 'update_time': updateTime!.toIso8601String(),
-    'links': links.map((e) => e.toJson()).toList(),
-  };
+        'id': id,
+        'status': status,
+        'amount': amount.toJson(),
+        if (sellerProtection != null)
+          'seller_protection': sellerProtection!.toJson(),
+        if (finalCapture != null) 'final_capture': finalCapture,
+        if (disbursementMode != null) 'disbursement_mode': disbursementMode,
+        if (sellerReceivableBreakdown != null)
+          'seller_receivable_breakdown': sellerReceivableBreakdown!.toJson(),
+        if (createTime != null) 'create_time': createTime!.toIso8601String(),
+        if (updateTime != null) 'update_time': updateTime!.toIso8601String(),
+        'links': links.map((e) => e.toJson()).toList(),
+      };
 }
 
 class PayPalMoney {
@@ -295,9 +295,9 @@ class PayPalMoney {
   }
 
   Map<String, dynamic> toJson() => {
-    'currency_code': currencyCode,
-    'value': value,
-  };
+        'currency_code': currencyCode,
+        'value': value,
+      };
 }
 
 class PayPalSellerProtection {
@@ -319,9 +319,9 @@ class PayPalSellerProtection {
   }
 
   Map<String, dynamic> toJson() => {
-    'status': status,
-    'dispute_categories': disputeCategories,
-  };
+        'status': status,
+        'dispute_categories': disputeCategories,
+      };
 }
 
 class PayPalSellerReceivableBreakdown {
@@ -335,24 +335,23 @@ class PayPalSellerReceivableBreakdown {
     this.paypalFee,
   });
 
-  factory PayPalSellerReceivableBreakdown.fromJson(
-      Map<String, dynamic> json) {
+  factory PayPalSellerReceivableBreakdown.fromJson(Map<String, dynamic> json) {
     return PayPalSellerReceivableBreakdown(
       grossAmount:
-      PayPalMoney.fromJson(json['gross_amount'] as Map<String, dynamic>),
+          PayPalMoney.fromJson(json['gross_amount'] as Map<String, dynamic>),
       paypalFee: json['paypal_fee'] != null
           ? PayPalMoney.fromJson(json['paypal_fee'] as Map<String, dynamic>)
           : null,
       netAmount:
-      PayPalMoney.fromJson(json['net_amount'] as Map<String, dynamic>),
+          PayPalMoney.fromJson(json['net_amount'] as Map<String, dynamic>),
     );
   }
 
   Map<String, dynamic> toJson() => {
-    'gross_amount': grossAmount.toJson(),
-    if (paypalFee != null) 'paypal_fee': paypalFee!.toJson(),
-    'net_amount': netAmount.toJson(),
-  };
+        'gross_amount': grossAmount.toJson(),
+        if (paypalFee != null) 'paypal_fee': paypalFee!.toJson(),
+        'net_amount': netAmount.toJson(),
+      };
 }
 
 /// ---------------- PAYER + NAME + LINKS ----------------
@@ -379,10 +378,10 @@ class PayPalPayer {
   }
 
   Map<String, dynamic> toJson() => {
-    if (name != null) 'name': name!.toJson(),
-    if (emailAddress != null) 'email_address': emailAddress,
-    if (payerId != null) 'payer_id': payerId,
-  };
+        if (name != null) 'name': name!.toJson(),
+        if (emailAddress != null) 'email_address': emailAddress,
+        if (payerId != null) 'payer_id': payerId,
+      };
 }
 
 class PayPalName {
@@ -399,9 +398,9 @@ class PayPalName {
   }
 
   Map<String, dynamic> toJson() => {
-    if (givenName != null) 'given_name': givenName,
-    if (surname != null) 'surname': surname,
-  };
+        if (givenName != null) 'given_name': givenName,
+        if (surname != null) 'surname': surname,
+      };
 }
 
 class PayPalLink {
@@ -424,8 +423,8 @@ class PayPalLink {
   }
 
   Map<String, dynamic> toJson() => {
-    'href': href,
-    'rel': rel,
-    'method': method,
-  };
+        'href': href,
+        'rel': rel,
+        'method': method,
+      };
 }

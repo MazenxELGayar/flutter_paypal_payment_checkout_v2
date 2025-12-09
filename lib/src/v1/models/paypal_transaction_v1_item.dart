@@ -20,12 +20,12 @@ class PaypalTransactionV1Item {
   });
 
   Map<String, dynamic> toJson() => {
-    "name": name,
-    "description": description,
-    "quantity": quantity,
-    "price": price.toString(),
-    "tax": tax.toString(),
-    "sku": sku,
-    "currency": currency,
-  };
+        "name": name,
+        "description": description,
+        "quantity": quantity,
+        "price": price.toString(),
+        "tax": tax.toString(),
+        "sku": sku,
+        "currency": currency,
+      };
 }

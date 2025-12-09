@@ -38,9 +38,9 @@ class PaypalServicesV2 {
   /// cannot generate the approval URL itself.
   final PayPalGetAccessToken? getAccessTokenFunction;
 
-  String get baseUrl =>
-      sandboxMode ? "https://api-m.sandbox.paypal.com" : "https://api-m.paypal.com";
-
+  String get baseUrl => sandboxMode
+      ? "https://api-m.sandbox.paypal.com"
+      : "https://api-m.paypal.com";
 
   PaypalServicesV2({
     required this.clientId,
