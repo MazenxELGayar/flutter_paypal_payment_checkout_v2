@@ -1,0 +1,5 @@
+{
+  "ACCESS_TOKEN_SUCCESS": "Token Created Successfully",
+  "PAYMENT_CREATE_SUCCESS": "Payment created successfully.",
+  "PAYMENT_EXECUTE_SUCCESS": "Payment executed successfully."
+}

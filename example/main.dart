@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_paypal_payment/flutter_paypal_payment.dart';
+import 'package:flutter_paypal_payment/src/v1/paypal_service_v1.dart';
 
 void main() {
   runApp(const PaypalPaymentDemo());
@@ -20,7 +21,7 @@ class PaypalPaymentDemo extends StatelessWidget {
           child: TextButton(
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(
-                builder: (BuildContext context) => PaypalCheckoutView(
+                builder: (BuildContext context) => PaypalCheckoutViewV1(
                   /// A MUST FOR PRODUCTION
                   getAccessToken: null,
 
@@ -30,52 +31,47 @@ class PaypalPaymentDemo extends StatelessWidget {
                   secretKey: "ONLY FOR SANDBOX (TESTING PURPOSES ONLY)",
 
                   /// API VERSION 1
-                  transactions: const [
-                    {
-                      "amount": {
-                        "total": '100',
-                        "currency": "USD",
-                        "details": {
-                          "subtotal": '100',
-                          "shipping": '0',
-                          "shipping_discount": 0
-                        }
-                      },
-                      "description": "The payment transaction description.",
-                      // "payment_options": {
-                      //   "allowed_payment_method":
-                      //       "INSTANT_FUNDING_SOURCE"
-                      // },
-                      "item_list": {
-                        "items": [
-                          {
-                            "name": "Apple",
-                            "quantity": 4,
-                            "price": '10',
-                            "currency": "USD"
-                          },
-                          {
-                            "name": "Pineapple",
-                            "quantity": 5,
-                            "price": '12',
-                            "currency": "USD"
-                          }
-                        ],
-
-                        // Optional
-                        //   "shipping_address": {
-                        //     "recipient_name": "Tharwat samy",
-                        //     "line1": "tharwat",
-                        //     "line2": "",
-                        //     "city": "tharwat",
-                        //     "country_code": "EG",
-                        //     "postal_code": "25025",
-                        //     "phone": "+00000000",
-                        //     "state": "ALex"
-                        //  },
-                      }
-                    }
-                  ],
+                  transactions: PaypalTransactionV1(
+                    amount: PaypalTransactionV1Amount(
+                      subTotal: 100.0,
+                      tax: 0.0,
+                      total: 100.0,
+                      // total = subtotal + tax + shipping + handlingFee - shippingDiscount + insurance
+                      shipping: 0.0,
+                      handlingFee: 0.0,
+                      shippingDiscount: 0.0,
+                      insurance: 0.0,
+                      currency: 'USD',
+                    ),
+                    description: "The payment transaction description.",
+                    custom: null,
+                    // dynamic, you can put user ID or anything
+                    items: [
+                      PaypalTransactionV1Item(
+                        name: "Apple",
+                        description: "Fresh apples",
+                        quantity: 4,
+                        price: 10.0,
+                        tax: 0.0,
+                        sku: "SKU_APPLE",
+                        currency: "USD",
+                      ),
+                      PaypalTransactionV1Item(
+                        name: "Pineapple",
+                        description: "Fresh pineapples",
+                        quantity: 5,
+                        price: 12.0,
+                        tax: 0.0,
+                        sku: "SKU_PINEAPPLE",
+                        currency: "USD",
+                      ),
+                    ],
+                    shippingAddress: null,
+                    // optional, can add PayPalShippingAddressV1 if needed
+                    invoiceNumber: null,
+                    paymentOptions: null,
+                    softDescriptor: null,
+                  ),
                   note: "Contact us for any questions on your order.",
                   onSuccess: (Map params) async {
                     log("onSuccess: $params");

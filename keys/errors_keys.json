@@ -1,0 +1,13 @@
+{
+  "INSECURE_CLIENT_CREDENTIALS": "You are passing clientId / secretKey directly into the app while not in sandboxMode. This is NOT safe for production: anyone can decompile the app and steal your PayPal keys. Recommended production setup: - Move all PayPal calls (access token, create order/payment, capture) to your backend. - Use the `approvalUrl` callback so the client only receives the checkout URL.",
+  "PAYPAL_CREDENTIALS_ERROR": "Your PayPal credentials seems incorrect",
+  "ACCESS_TOKEN_NETWORK_ERROR": "Unable to proceed, check your internet connection.",
+  "PAYMENT_MISSING_LINKS": "Invalid PayPal response: missing links.",
+  "PAYMENT_NO_LINKS": "Invalid PayPal response: no links.",
+  "PAYMENT_FAILED": "Payment Failed.",
+  "EMPTY_TRANSACTIONS": "Transactions cannot be empty",
+  "PAYMENT_UNKNOWN_ERROR": "Unexpected error while creating payment.",
+  "PAYMENT_EXECUTE_FAILED": "Payment execute failed",
+  "PAYMENT_EXECUTE_PAYER_ID_NULL": "PayerID is null",
+  "PAYMENT_EXECUTE_UNKNOWN_ERROR": "Unexpected error while executing payment."
+}

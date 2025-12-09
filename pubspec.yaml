@@ -9,6 +9,7 @@ environment:
 
 dependencies:
   dio: ^5.9.0
+  dartz: ^0.10.1
   flutter:
     sdk: flutter
   flutter_inappwebview: ^6.1.5
