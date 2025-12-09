@@ -1,42 +1,54 @@
+import 'dart:async';
+import 'dart:convert' as convert;
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
 
-import 'dart:async';
-import 'dart:convert' as convert;
+typedef GetAccessToken = Future<String> Function();
 
 class PaypalServices {
-  final String clientId, secretKey;
+  final String? clientId, secretKey;
   final bool sandboxMode;
+  final GetAccessToken? getAccessTokenFunction;
+
+  String get baseUrl =>
+      sandboxMode ? "https://api.sandbox.paypal.com" : "https://api.paypal.com";
+
   PaypalServices({
     required this.clientId,
     required this.secretKey,
     required this.sandboxMode,
+    required this.getAccessTokenFunction,
   });
 
   getAccessToken() async {
-    String baseUrl = sandboxMode
-        ? "https://api-m.sandbox.paypal.com"
-        : "https://api.paypal.com";
-
     try {
-      var authToken = base64.encode(
-        utf8.encode("$clientId:$secretKey"),
-      );
-      final response = await Dio()
-          .post('$baseUrl/v1/oauth2/token?grant_type=client_credentials',
-              options: Options(
-                headers: {
-                  'Authorization': 'Basic $authToken',
-                  'Content-Type': 'application/x-www-form-urlencoded'
-                },
-              ));
-      final body = response.data;
-      return {
-        'error': false,
-        'message': "Success",
-        'token': body["access_token"]
-      };
+      if (getAccessTokenFunction != null) {
+        final accessToken = await getAccessTokenFunction!();
+        return {
+          'error': false,
+          'message': "Success",
+          'token': accessToken,
+        };
+      } else {
+        var authToken = base64.encode(
+          utf8.encode("$clientId:$secretKey"),
+        );
+        final response = await Dio()
+            .post('$baseUrl/v1/oauth2/token?grant_type=client_credentials',
+                options: Options(
+                  headers: {
+                    'Authorization': 'Basic $authToken',
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                  },
+                ));
+        final body = response.data;
+        return {
+          'error': false,
+          'message': "Success",
+          'token': body["access_token"]
+        };
+      }
     } on DioException {
       return {
         'error': true,
@@ -54,12 +66,8 @@ class PaypalServices {
     transactions,
     accessToken,
   ) async {
-    String domain = sandboxMode
-        ? "https://api.sandbox.paypal.com"
-        : "https://api.paypal.com";
-
     try {
-      final response = await Dio().post('$domain/v1/payments/payment',
+      final response = await Dio().post('$baseUrl/v1/payments/payment',
           data: jsonEncode(transactions),
           options: Options(
             headers: {

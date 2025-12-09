@@ -21,9 +21,15 @@ class PaypalPaymentDemo extends StatelessWidget {
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(
                 builder: (BuildContext context) => PaypalCheckoutView(
+                  /// A MUST FOR PRODUCTION
+                  getAccessToken: null,
+
+                  /// SANDBOX IS TESTING MODE
                   sandboxMode: true,
-                  clientId: "YOUR CLIENT ID",
-                  secretKey: "YOUR SECRET KEY",
+                  clientId: "ONLY FOR SANDBOX (TESTING PURPOSES ONLY)",
+                  secretKey: "ONLY FOR SANDBOX (TESTING PURPOSES ONLY)",
+
+                  /// API VERSION 1
                   transactions: const [
                     {
                       "amount": {
@@ -80,7 +86,7 @@ class PaypalPaymentDemo extends StatelessWidget {
                     Navigator.pop(context);
                   },
                   onCancel: () {
-                    print('cancelled:');
+                    log('cancelled:');
                     Navigator.pop(context);
                   },
                 ),

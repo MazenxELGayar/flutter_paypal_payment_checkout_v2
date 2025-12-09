@@ -6,20 +6,28 @@ import 'package:flutter_paypal_payment/src/paypal_service.dart';
 
 class PaypalCheckoutView extends StatefulWidget {
   final Function onSuccess, onCancel, onError;
-  final String? note, clientId, secretKey;
+  final String appBarTitle;
+  final String? note;
+  final Future<String> Function()? getAccessToken;
+
+  /// SHOULD NEVER BE USED FOR PRODUCTION
+  final String? clientId, secretKey;
 
   final Widget? loadingIndicator;
   final List? transactions;
-  final bool? sandboxMode;
+  final bool sandboxMode;
+
   const PaypalCheckoutView({
     Key? key,
     required this.onSuccess,
+    required this.getAccessToken,
     required this.onError,
     required this.onCancel,
     required this.transactions,
     required this.clientId,
     required this.secretKey,
-    this.sandboxMode = false,
+    required this.sandboxMode,
+    this.appBarTitle = "Paypal Payment",
     this.note = '',
     this.loadingIndicator,
   }) : super(key: key);
@@ -61,9 +69,10 @@ class PaypalCheckoutViewState extends State<PaypalCheckoutView> {
   @override
   void initState() {
     services = PaypalServices(
-      sandboxMode: widget.sandboxMode!,
-      clientId: widget.clientId!,
-      secretKey: widget.secretKey!,
+      getAccessTokenFunction: widget.getAccessToken,
+      sandboxMode: widget.sandboxMode,
+      clientId: widget.clientId,
+      secretKey: widget.secretKey,
     );
 
     super.initState();
@@ -101,8 +110,8 @@ class PaypalCheckoutViewState extends State<PaypalCheckoutView> {
           backgroundColor: Colors.transparent,
           elevation: 0,
           centerTitle: true,
-          title: const Text(
-            "Paypal Payment",
+          title: Text(
+            widget.appBarTitle,
           ),
         ),
         body: Stack(
@@ -157,8 +166,8 @@ class PaypalCheckoutViewState extends State<PaypalCheckoutView> {
           backgroundColor: Colors.transparent,
           elevation: 0,
           centerTitle: true,
-          title: const Text(
-            "Paypal Payment",
+          title: Text(
+            widget.appBarTitle,
           ),
         ),
         body: Center(
