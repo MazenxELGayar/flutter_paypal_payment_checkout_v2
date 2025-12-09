@@ -2,8 +2,8 @@ library flutter_paypal_checkout;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:flutter_paypal_payment/src/models/shared_models.dart';
-import 'package:flutter_paypal_payment/src/v1/paypal_service_v1.dart';
+import 'package:flutter_paypal_payment_checkout_v2/src/models/shared_models.dart';
+import 'package:flutter_paypal_payment_checkout_v2/src/v1/paypal_service_v1.dart';
 
 class PaypalCheckoutViewV1 extends StatefulWidget {
   final Function onSuccess, onCancel;

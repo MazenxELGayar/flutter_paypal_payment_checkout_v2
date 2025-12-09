@@ -1,8 +1,8 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_paypal_payment/flutter_paypal_payment.dart';
-import 'package:flutter_paypal_payment/src/v1/paypal_service_v1.dart';
+import 'package:flutter_paypal_payment_checkout_v2/src/v1/paypal_checkout_view_v1.dart';
+import 'package:flutter_paypal_payment_checkout_v2/src/v1/paypal_service_v1.dart';
 
 void main() {
   runApp(const PaypalPaymentDemo());

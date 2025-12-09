@@ -2,8 +2,8 @@ library flutter_paypal_checkout;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:flutter_paypal_payment/src/models/shared_models.dart';
-import 'package:flutter_paypal_payment/src/v2/pay_pal_service_v2.dart';
+import 'package:flutter_paypal_payment_checkout_v2/src/models/shared_models.dart';
+import 'package:flutter_paypal_payment_checkout_v2/src/v2/pay_pal_service_v2.dart';
 
 import 'models/pay_pal_capture_order_response_v2.dart';
 

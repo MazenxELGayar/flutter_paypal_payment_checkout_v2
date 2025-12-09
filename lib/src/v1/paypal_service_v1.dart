@@ -4,7 +4,7 @@ import 'dart:convert';
 
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter_paypal_payment/src/models/shared_models.dart';
+import 'package:flutter_paypal_payment_checkout_v2/src/models/shared_models.dart';
 
 part 'models/pay_pal_execute_payment_model_v1.dart';
 part 'models/pay_pal_shipping_address_v1.dart';

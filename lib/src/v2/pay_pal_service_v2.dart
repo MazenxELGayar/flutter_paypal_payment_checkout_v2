@@ -3,8 +3,8 @@ import 'dart:convert';
 
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter_paypal_payment/src/models/shared_models.dart';
-import 'package:flutter_paypal_payment/src/v2/models/pay_pal_capture_order_response_v2.dart';
+import 'package:flutter_paypal_payment_checkout_v2/src/models/shared_models.dart';
+import 'package:flutter_paypal_payment_checkout_v2/src/v2/models/pay_pal_capture_order_response_v2.dart';
 
 part 'enums/pay_pal_item_category_v2.dart';
 part 'enums/pay_pal_landing_page_v2.dart';
