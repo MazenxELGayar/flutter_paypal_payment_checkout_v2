@@ -33,7 +33,7 @@ Add to `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  flutter_paypal_payment_v2: ^2.0.0
+  flutter_paypal_payment_checkout_v2: ^2.0.0
 ```
 
 Install:
