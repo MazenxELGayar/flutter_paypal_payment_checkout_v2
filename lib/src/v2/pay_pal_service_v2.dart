@@ -274,7 +274,6 @@ class PaypalServicesV2 {
           },
         ),
       );
-
       return Right(
         PayPalCaptureOrderResponse.fromJson(
           response.data,

@@ -1,5 +1,58 @@
+import 'package:flutter/foundation.dart';
+
+typedef PayPalOnSuccessV2 = dynamic Function(
+    PayPalCaptureOrderResponse response);
+
 /// Root: /v2/checkout/orders/{id}/capture response
 class PayPalCaptureOrderResponse {
+  final PayPalCaptureOrderParsedResponse? parsedResponse;
+  final Map<String, dynamic> raw;
+
+  PayPalCaptureOrderResponse({
+    required this.parsedResponse,
+    required this.raw,
+  });
+
+  factory PayPalCaptureOrderResponse.fromJson(Map<String, dynamic> json) {
+    try {
+      final parsed = PayPalCaptureOrderParsedResponse(
+        id: json['id'] as String,
+        status: json['status'] as String,
+        paymentSource: json['payment_source'] != null
+            ? PayPalCapturePaymentSource.fromJson(
+                json['payment_source'] as Map<String, dynamic>,
+              )
+            : null,
+        purchaseUnits: (json['purchase_units'] as List<dynamic>? ?? [])
+            .map((e) =>
+                PayPalCapturePurchaseUnit.fromJson(e as Map<String, dynamic>))
+            .toList(),
+        payer: json['payer'] != null
+            ? PayPalPayer.fromJson(json['payer'] as Map<String, dynamic>)
+            : null,
+        links: (json['links'] as List<dynamic>? ?? [])
+            .map((e) => PayPalLink.fromJson(e as Map<String, dynamic>))
+            .toList(),
+      );
+      return PayPalCaptureOrderResponse(
+        parsedResponse: parsed,
+        raw: json,
+      );
+    } catch (e, trace) {
+      if (kDebugMode) {
+        print(
+          "couldn't parse response model: $e\n$trace",
+        );
+      }
+      return PayPalCaptureOrderResponse(
+        parsedResponse: null,
+        raw: json,
+      );
+    }
+  }
+}
+
+class PayPalCaptureOrderParsedResponse {
   final String id;
   final String status;
   final PayPalCapturePaymentSource? paymentSource;
@@ -7,7 +60,7 @@ class PayPalCaptureOrderResponse {
   final PayPalPayer? payer;
   final List<PayPalLink> links;
 
-  PayPalCaptureOrderResponse({
+  PayPalCaptureOrderParsedResponse({
     required this.id,
     required this.status,
     required this.purchaseUnits,
@@ -15,28 +68,6 @@ class PayPalCaptureOrderResponse {
     this.paymentSource,
     this.payer,
   });
-
-  factory PayPalCaptureOrderResponse.fromJson(Map<String, dynamic> json) {
-    return PayPalCaptureOrderResponse(
-      id: json['id'] as String,
-      status: json['status'] as String,
-      paymentSource: json['payment_source'] != null
-          ? PayPalCapturePaymentSource.fromJson(
-              json['payment_source'] as Map<String, dynamic>,
-            )
-          : null,
-      purchaseUnits: (json['purchase_units'] as List<dynamic>? ?? [])
-          .map((e) =>
-              PayPalCapturePurchaseUnit.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      payer: json['payer'] != null
-          ? PayPalPayer.fromJson(json['payer'] as Map<String, dynamic>)
-          : null,
-      links: (json['links'] as List<dynamic>? ?? [])
-          .map((e) => PayPalLink.fromJson(e as Map<String, dynamic>))
-          .toList(),
-    );
-  }
 
   Map<String, dynamic> toJson() => {
         'id': id,

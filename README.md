@@ -17,7 +17,7 @@ To install the Flutter PayPal Payment Package, follow these steps
 1. Add the package to your project's dependencies in the `pubspec.yaml` file:
    ```yaml
    dependencies:
-     flutter_paypal_payment: ^1.0.7
+     flutter_paypal_payment: ^2.0.0
     ``` 
 2. Run the following command to fetch the package:
 
@@ -33,75 +33,78 @@ To install the Flutter PayPal Payment Package, follow these steps
     ```
 2. Navigate to the PayPal checkout view with the desired configuration:
 ```dart
- Navigator.of(context).push(MaterialPageRoute(
-                  builder: (BuildContext context) => PaypalCheckoutView(
-                    sandboxMode: true,
-                    clientId: "",
-                    secretKey: "",
-                    transactions: const [
-                      {
-                        "amount": {
-                          "total": '70',
-                          "currency": "USD",
-                          "details": {
-                            "subtotal": '70',
-                            "shipping": '0',
-                            "shipping_discount": 0
-                          }
-                        },
-                        "description": "The payment transaction description.",
-                        // "payment_options": {
-                        //   "allowed_payment_method":
-                        //       "INSTANT_FUNDING_SOURCE"
-                        // },
-                        "item_list": {
-                          "items": [
-                            {
-                              "name": "Apple",
-                              "quantity": 4,
-                              "price": '5',
-                              "currency": "USD"
-                            },
-                            {
-                              "name": "Pineapple",
-                              "quantity": 5,
-                              "price": '10',
-                              "currency": "USD"
-                            }
-                          ],
+Navigator.of(context).push(MaterialPageRoute(
+builder: (BuildContext context) => PaypalCheckoutViewV1(
+/// A MUST FOR PRODUCTION
+getAccessToken: null,
 
-                          // shipping address is not required though
-                          //   "shipping_address": {
-                          //     "recipient_name": "tharwat",
-                          //     "line1": "Alexandria",
-                          //     "line2": "",
-                          //     "city": "Alexandria",
-                          //     "country_code": "EG",
-                          //     "postal_code": "21505",
-                          //     "phone": "+00000000",
-                          //     "state": "Alexandria"
-                          //  },
-                        }
-                      }
-                    ],
-                    note: "Contact us for any questions on your order.",
-                    onSuccess: (Map params) async {
-                      print("onSuccess: $params");
-                    },
-                    onError: (error) {
-                      print("onError: $error");
-                      Navigator.pop(context);
-                    },
-                    onCancel: () {
-                      print('cancelled:');
-                    },
-                  ),
-                ));
+/// SANDBOX IS TESTING MODE
+sandboxMode: true,
+clientId: "ONLY FOR SANDBOX (TESTING PURPOSES ONLY)",
+secretKey: "ONLY FOR SANDBOX (TESTING PURPOSES ONLY)",
+
+/// API VERSION 1
+transactions: PaypalTransactionV1(
+amount: PaypalTransactionV1Amount(
+subTotal: 100.0,
+tax: 0.0,
+total: 100.0,
+// total = subtotal + tax + shipping + handlingFee - shippingDiscount + insurance
+shipping: 0.0,
+handlingFee: 0.0,
+shippingDiscount: 0.0,
+insurance: 0.0,
+currency: 'USD',
+),
+description: "The payment transaction description.",
+custom: null,
+// dynamic, you can put user ID or anything
+items: [
+PaypalTransactionV1Item(
+name: "Apple",
+description: "Fresh apples",
+quantity: 4,
+price: 10.0,
+tax: 0.0,
+sku: "SKU_APPLE",
+currency: "USD",
+),
+PaypalTransactionV1Item(
+name: "Pineapple",
+description: "Fresh pineapples",
+quantity: 5,
+price: 12.0,
+tax: 0.0,
+sku: "SKU_PINEAPPLE",
+currency: "USD",
+),
+],
+shippingAddress: null,
+// optional, can add PayPalShippingAddressV1 if needed
+invoiceNumber: null,
+paymentOptions: null,
+softDescriptor: null,
+),
+note: "Contact us for any questions on your order.",
+onSuccess: (Map params) async {
+log("onSuccess: $params");
+Navigator.pop(context);
+},
+onError: (error) {
+log("onError: $error");
+Navigator.pop(context);
+},
+onCancel: () {
+log('cancelled:');
+Navigator.pop(context);
+},
+),
+));
 ``` 
 ## ⚡ Donate 
 
 If you would like to support me, please consider making a donation through one of the following links:
 
-* [PayPal](https://paypal.me/itharwat)
+* [PayPal](https://paypal.me/mazenelgayar)
 
 Thank you for your support!
