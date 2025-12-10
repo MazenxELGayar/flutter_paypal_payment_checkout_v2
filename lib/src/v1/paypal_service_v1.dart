@@ -1,10 +1,3 @@
-/// PayPal Payments API V1 integration layer.
-///
-/// This library provides a concrete implementation of [PaypalServicesBase]
-/// that talks to the legacy **PayPal Payments V1 API**:
-/// - `POST /v1/payments/payment`  → create payment
-/// - `POST {executeUrl}`          → execute an approved payment
-
 import 'dart:async';
 import 'dart:convert';
 
@@ -16,6 +9,13 @@ import 'package:flutter_paypal_payment_checkout_v2/src/models/paypal_services_ba
 import 'package:flutter_paypal_payment_checkout_v2/src/models/paypal_shared_models.dart';
 
 import 'models/paypal_order_request_v1.dart';
+
+/// PayPal Payments API V1 integration layer.
+///
+/// This library provides a concrete implementation of [PaypalServicesBase]
+/// that talks to the legacy **PayPal Payments V1 API**:
+/// - `POST /v1/payments/payment`  → create payment
+/// - `POST {executeUrl}`          → execute an approved payment
 
 /// Concrete PayPal service for the **Payments API V1**.
 ///

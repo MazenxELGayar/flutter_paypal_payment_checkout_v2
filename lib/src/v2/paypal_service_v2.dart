@@ -1,10 +1,3 @@
-/// PayPal Orders API V2 integration layer.
-///
-/// This library provides a concrete implementation of [PaypalServicesBase]
-/// that talks to the modern **PayPal Orders V2 API**:
-///
-/// - `POST /v2/checkout/orders`          → Create order
-/// - `POST /v2/checkout/orders/{id}/capture` → Capture an approved order
 import 'dart:async';
 import 'dart:convert';
 
@@ -17,6 +10,13 @@ import 'package:flutter_paypal_payment_checkout_v2/src/models/paypal_shared_mode
 
 import 'models/paypal_order_request_v2.dart';
 
+/// PayPal Orders API V2 integration layer.
+///
+/// This library provides a concrete implementation of [PaypalServicesBase]
+/// that talks to the modern **PayPal Orders V2 API**:
+///
+/// - `POST /v2/checkout/orders`          → Create order
+/// - `POST /v2/checkout/orders/{id}/capture` → Capture an approved order
 /// Concrete PayPal service for the **Orders API V2**.
 ///
 /// Extends [PaypalServicesBase] and implements:
