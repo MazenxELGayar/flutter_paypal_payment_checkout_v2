@@ -272,3 +272,4 @@ Useful for mobile deep linking.
 # 📄 License
 
 MIT © 2025 [Mazen El-Gayar](https://github.com/MazenxELGayar)
+MIT © 2023 [Tharwat](https://github.com/tharwatsamy)
