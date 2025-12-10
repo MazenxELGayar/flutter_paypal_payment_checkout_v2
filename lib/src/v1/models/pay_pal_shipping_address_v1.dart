@@ -1,5 +1,3 @@
-
-
 class PayPalShippingAddressV1 {
   final String recipientName;
   final String line1;

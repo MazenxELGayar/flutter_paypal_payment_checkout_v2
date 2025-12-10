@@ -2,15 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
-## 2.0.6 — 2025-12-10
-- Removed Part and P
+Here is a clean, professional, publish-ready changelog entry for your update:
 
-## 2.0.5 — 2025-12-10
-- Fixed Bug where V1 and V2 Models couldn't be imported.
-- Removed WEB Support.
+---
 
-## 2.0.4 — 2025-12-10
-- Forgot to export models, all models and services are now usable.
+## **2.0.6 — 2025-12-10**
+
+### 🛠 Refactor & Stability Improvements
+
+* **Removed all `part` / `part of` files** across V1 and V2 to make the package fully modular and public-API friendly.
+* **Replaced parts with standard imports**, fixing issues where models were not accessible when importing the package.
+* **Properly exported all V1 & V2 models, enums, and services** from the main library file.
+* **Improved package structure** to follow pub.dev best practices for public packages.
+* **Stability improvements** for IDE code completion, analyzer warnings, and pub.dev scoring.
+* **No breaking API changes** — all models remain the same, just now properly exposed.
 
 ## 2.0.3 — 2025-12-10
 - Added Tharwat to the contributors.

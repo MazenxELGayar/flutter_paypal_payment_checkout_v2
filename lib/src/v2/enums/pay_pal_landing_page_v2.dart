@@ -1,5 +1,3 @@
-
-
 /// "LOGIN" or "NO_PREFERENCE"
 enum PayPalLandingPageV2 {
   login,

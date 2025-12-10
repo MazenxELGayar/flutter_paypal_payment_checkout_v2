@@ -1,5 +1,3 @@
-
-
 /// PayPal Orders V2 Item Category
 enum PayPalItemCategoryV2 {
   physicalGoods,

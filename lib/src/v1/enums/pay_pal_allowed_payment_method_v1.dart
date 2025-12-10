@@ -1,5 +1,3 @@
-
-
 /// "IMMEDIATE_PAYMENT_REQUIRED" or "UNRESTRICTED"
 enum PayPalAllowedPaymentMethodV1 {
   unrestricted,

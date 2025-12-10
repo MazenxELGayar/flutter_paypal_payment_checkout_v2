@@ -1,5 +1,3 @@
-
-
 /// PayPal Orders V2 `shipping_preference`
 ///
 /// Controls how shipping addresses are handled during checkout.

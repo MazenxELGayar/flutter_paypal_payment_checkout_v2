@@ -1,5 +1,3 @@
-
-
 /// "PAY_NOW" or "CONTINUE"
 enum PayPalUserActionV2 {
   payNow,

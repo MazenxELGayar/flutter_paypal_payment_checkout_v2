@@ -1,5 +1,3 @@
-
-
 /// PayPal Orders V2 intent: "CAPTURE" or "AUTHORIZE"
 enum PayPalOrderIntentV2 {
   capture,

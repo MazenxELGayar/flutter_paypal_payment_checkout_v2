@@ -1,5 +1,3 @@
-
-
 class PaypalTransactionV1Amount {
   final double subTotal;
   final double tax;

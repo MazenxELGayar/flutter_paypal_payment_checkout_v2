@@ -1,5 +1,3 @@
-
-
 import 'package:flutter_paypal_payment_checkout_v2/flutter_paypal_payment_checkout_v2.dart';
 import 'package:flutter_paypal_payment_checkout_v2/src/v2/enums/pay_pal_order_intent_v2.dart';
 import 'package:flutter_paypal_payment_checkout_v2/src/v2/models/pay_pal_experience_context_v2.dart';

@@ -1,5 +1,3 @@
-
-
 class PaypalTransactionV1Item {
   final String name;
   final String description;

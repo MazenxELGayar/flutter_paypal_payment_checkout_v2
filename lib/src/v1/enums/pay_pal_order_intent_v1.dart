@@ -1,5 +1,3 @@
-
-
 /// PayPal Orders V1 intent: "sale" or "authorize"
 enum PayPalOrderIntentV1 {
   sale,
