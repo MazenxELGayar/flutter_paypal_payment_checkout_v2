@@ -1,4 +1,4 @@
-part of '../paypal_service_v1.dart';
+
 
 /// PayPal Orders V1 intent: "sale" or "authorize"
 enum PayPalOrderIntentV1 {

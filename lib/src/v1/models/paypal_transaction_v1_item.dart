@@ -1,4 +1,4 @@
-part of '../paypal_service_v1.dart';
+
 
 class PaypalTransactionV1Item {
   final String name;

@@ -1,4 +1,4 @@
-part of '../pay_pal_service_v2.dart';
+
 
 /// "PAY_NOW" or "CONTINUE"
 enum PayPalUserActionV2 {

@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.0.6 — 2025-12-10
+- Removed Part and P
+
 ## 2.0.5 — 2025-12-10
 - Fixed Bug where V1 and V2 Models couldn't be imported.
 - Removed WEB Support.

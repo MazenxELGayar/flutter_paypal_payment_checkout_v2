@@ -1,4 +1,6 @@
-part of '../pay_pal_service_v2.dart';
+
+
+import 'package:flutter_paypal_payment_checkout_v2/src/v2/enums/pay_pal_item_category_v2.dart';
 
 /// -------------------- PURCHASE UNITS / ITEMS --------------------
 

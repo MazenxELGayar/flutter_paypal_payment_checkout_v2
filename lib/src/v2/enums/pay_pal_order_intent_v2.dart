@@ -1,4 +1,4 @@
-part of '../pay_pal_service_v2.dart';
+
 
 /// PayPal Orders V2 intent: "CAPTURE" or "AUTHORIZE"
 enum PayPalOrderIntentV2 {

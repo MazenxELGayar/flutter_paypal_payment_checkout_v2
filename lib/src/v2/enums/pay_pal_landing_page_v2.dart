@@ -1,4 +1,4 @@
-part of '../pay_pal_service_v2.dart';
+
 
 /// "LOGIN" or "NO_PREFERENCE"
 enum PayPalLandingPageV2 {

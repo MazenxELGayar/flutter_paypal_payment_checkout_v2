@@ -1,4 +1,6 @@
-part of '../paypal_service_v1.dart';
+import 'package:flutter_paypal_payment_checkout_v2/flutter_paypal_payment_checkout_v2.dart';
+import 'package:flutter_paypal_payment_checkout_v2/src/v1/enums/pay_pal_order_intent_v1.dart';
+import 'package:flutter_paypal_payment_checkout_v2/src/v1/models/paypal_transaction_v1.dart';
 
 /// -------------------- ORDER REQUEST --------------------
 

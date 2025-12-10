@@ -1,4 +1,4 @@
-part of '../pay_pal_service_v2.dart';
+
 
 /// "IMMEDIATE_PAYMENT_REQUIRED" or "UNRESTRICTED"
 enum PayPalPaymentMethodPreferenceV2 {

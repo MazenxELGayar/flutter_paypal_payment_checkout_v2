@@ -1,4 +1,9 @@
-part of '../paypal_service_v1.dart';
+
+
+import 'package:flutter_paypal_payment_checkout_v2/src/v1/enums/pay_pal_allowed_payment_method_v1.dart';
+import 'package:flutter_paypal_payment_checkout_v2/src/v1/models/pay_pal_shipping_address_v1.dart';
+import 'package:flutter_paypal_payment_checkout_v2/src/v1/models/paypal_transaction_v1_amount.dart';
+import 'package:flutter_paypal_payment_checkout_v2/src/v1/models/paypal_transaction_v1_item.dart';
 
 class PaypalTransactionV1 {
   final PaypalTransactionV1Amount amount;

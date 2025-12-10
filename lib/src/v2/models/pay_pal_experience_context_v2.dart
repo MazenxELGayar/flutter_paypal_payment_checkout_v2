@@ -1,4 +1,9 @@
-part of '../pay_pal_service_v2.dart';
+import 'package:flutter_paypal_payment_checkout_v2/src/v2/enums/pay_pal_landing_page_v2.dart';
+import 'package:flutter_paypal_payment_checkout_v2/src/v2/enums/pay_pal_payment_method_preference_v2.dart';
+import 'package:flutter_paypal_payment_checkout_v2/src/v2/enums/pay_pal_shipping_preference_v2.dart';
+import 'package:flutter_paypal_payment_checkout_v2/src/v2/enums/pay_pal_user_action_v2.dart';
+
+import '../../../flutter_paypal_payment_checkout_v2.dart';
 
 /// payment_source.paypal
 class PayPalPaymentSourceV2 {

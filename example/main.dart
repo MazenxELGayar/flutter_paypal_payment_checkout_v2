@@ -2,8 +2,19 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_paypal_payment_checkout_v2/src/paypal_checkout_view.dart';
-import 'package:flutter_paypal_payment_checkout_v2/src/v1/paypal_service_v1.dart';
-import 'package:flutter_paypal_payment_checkout_v2/src/v2/pay_pal_service_v2.dart';
+import 'package:flutter_paypal_payment_checkout_v2/src/v1/enums/pay_pal_order_intent_v1.dart';
+import 'package:flutter_paypal_payment_checkout_v2/src/v1/models/pay_pal_order_request_v1.dart';
+import 'package:flutter_paypal_payment_checkout_v2/src/v1/models/pay_pal_shipping_address_v1.dart';
+import 'package:flutter_paypal_payment_checkout_v2/src/v1/models/paypal_transaction_v1.dart';
+import 'package:flutter_paypal_payment_checkout_v2/src/v1/models/paypal_transaction_v1_amount.dart';
+import 'package:flutter_paypal_payment_checkout_v2/src/v1/models/paypal_transaction_v1_item.dart';
+import 'package:flutter_paypal_payment_checkout_v2/src/v2/enums/pay_pal_item_category_v2.dart';
+import 'package:flutter_paypal_payment_checkout_v2/src/v2/enums/pay_pal_order_intent_v2.dart';
+import 'package:flutter_paypal_payment_checkout_v2/src/v2/enums/pay_pal_payment_method_preference_v2.dart';
+import 'package:flutter_paypal_payment_checkout_v2/src/v2/enums/pay_pal_shipping_preference_v2.dart';
+import 'package:flutter_paypal_payment_checkout_v2/src/v2/models/pay_pal_experience_context_v2.dart';
+import 'package:flutter_paypal_payment_checkout_v2/src/v2/models/pay_pal_order_request_v2.dart';
+import 'package:flutter_paypal_payment_checkout_v2/src/v2/models/pay_pal_purchase_unit_v2.dart';
 
 void main() {
   runApp(const PaypalPaymentDemo());
