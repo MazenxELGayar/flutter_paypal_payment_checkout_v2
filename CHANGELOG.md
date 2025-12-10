@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.0.4 — 2025-12-10
+- Forgot to export models, all models and services are now usable.
+
 ## 2.0.3 — 2025-12-10
 - Added Tharwat to the contributors.
 
