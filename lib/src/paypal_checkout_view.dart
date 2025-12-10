@@ -1,53 +1,130 @@
+/// Flutter PayPal Payment Checkout (V1 & V2).
+///
+/// This library exposes a single high-level widget:
+/// [PaypalCheckoutView]
+///
+/// It handles:
+/// - Creating a PayPal payment/order (via V1 or V2 APIs)
+/// - Rendering the approval page in an in-app webview
+/// - Listening to return/cancel URLs
+/// - Executing/capturing the payment (if needed)
+/// - Returning the result via callbacks
 library flutter_paypal_payment_checkout_v2;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_paypal_payment_checkout_v2/src/models/paypal_services_base.dart';
-import 'package:flutter_paypal_payment_checkout_v2/src/models/shared_models.dart';
+import 'package:flutter_paypal_payment_checkout_v2/src/models/paypal_shared_models.dart';
 import 'package:flutter_paypal_payment_checkout_v2/src/v1/paypal_service_v1.dart';
-import 'package:flutter_paypal_payment_checkout_v2/src/v2/pay_pal_service_v2.dart';
+import 'package:flutter_paypal_payment_checkout_v2/src/v2/paypal_service_v2.dart';
 
 import 'models/paypal_payment_model.dart'
     show PayPalGetApprovalUrl, PaypalPaymentModel;
 
+/// Supported PayPal API versions.
+///
+/// - [PayPalApiVersion.v1] → Legacy Payments API V1.
+/// - [PayPalApiVersion.v2] → Modern Orders API V2 (recommended).
 enum PayPalApiVersion { v1, v2 }
 
+/// Main checkout widget that handles the entire PayPal flow.
+///
+/// This widget:
+/// - Initializes the selected PayPal API service (V1 or V2).
+/// - Either:
+///   - Uses a backend-provided [approvalUrl], **or**
+///   - Creates the payment/order directly from the client.
+/// - Opens an in-app webview to show the PayPal approval page.
+/// - Listens for success/cancel redirects using return/cancel URLs.
+/// - Executes/captures the payment for client-side flows.
+/// - Returns the result to [onUserPayment], [onCancel], or [onError].
 class PaypalCheckoutView extends StatefulWidget {
+  /// Which PayPal API version to use.
+  ///
+  /// - [PayPalApiVersion.v1] → uses [PaypalServicesV1] and V1 models.
+  /// - [PayPalApiVersion.v2] → uses [PaypalServicesV2] and V2 models.
   final PayPalApiVersion version;
+
+  /// Called when the user completes the payment flow.
+  ///
+  /// - `response` may be `null` when using the **backend-driven** flow
+  ///   (where the server executes/captures and the client only receives
+  ///   the `PaypalPaymentModel`).
+  /// - `payment` is always the [PaypalPaymentModel] created at the start.
   final PayPalOnSuccess onUserPayment;
+
+  /// Called when the user cancels the PayPal checkout flow.
   final Function onCancel;
+
+  /// Called when any error occurs during:
+  /// - Initialization
+  /// - Network calls
+  /// - Version mismatch
+  /// - Unknown exceptions
   final PayPalOnError onError;
+
+  /// App bar title displayed at the top of the checkout screen.
   final String appBarTitle;
+
+  /// Optional note or description (not currently used in logic, but available
+  /// for future enhancements or custom UIs).
   final String? note;
 
-  /// Most secure workflow.
-  /// Your backend is responsible for creating the PayPal order
-  /// and returning only the approval URL for the user to complete checkout.
+  /// Most secure workflow:
+  ///
+  /// Your backend:
+  /// - Creates the PayPal order/payment.
+  /// - Returns a [PaypalPaymentModel] with `approvalUrl`.
+  ///
+  /// The client:
+  /// - Only loads that URL and listens for return/cancel.
+  ///
+  /// Use this when you do **not** want to expose credentials or perform
+  /// PayPal API calls in the client.
   final PayPalGetApprovalUrl? approvalUrl;
 
   /// Less secure and generally not recommended for production.
-  /// Used when the client requests an access token directly or when the backend
-  /// cannot generate the approval URL itself.
+  ///
+  /// Used when:
+  /// - The client must request an access token directly.
+  /// - The backend cannot (or does not) create the order itself.
+  ///
+  /// This function should return a **server-generated** access token,
+  /// not client credentials.
   final PayPalGetAccessToken? getAccessToken;
 
   /// Should NEVER be used in production.
-  /// Only for testing without a backend, as it exposes the PayPal clientId
-  /// and secretKey inside the application, which is insecure.
+  ///
+  /// Only for testing or demo apps where you cannot set up a backend yet.
+  /// Passing [clientId] and [secretKey] into the app is insecure because
+  /// they can be extracted from the binary.
   final String? clientId, secretKey;
 
+  /// Optional custom loading widget shown while:
+  /// - Initializing the payment/order, or
+  /// - Waiting for callbacks.
   final Widget? loadingIndicator;
 
-  /// Can be PayPalOrderRequestV1 or PayPalOrderRequestV2
+  /// The PayPal order model used to build the request.
+  ///
+  /// - For V1: [PayPalOrderRequestV1]
+  /// - For V2: [PayPalOrderRequestV2]
+  ///
+  /// When using [approvalUrl], this may be `null` if your backend
+  /// handles all order creation and execution logic.
   final PayPalOrderRequestBase? payPalOrder;
 
-  /// When true → calls PayPal sandbox APIs.
-  /// When false → calls live / production PayPal APIs.
+  /// When `true` → uses PayPal sandbox endpoints.
+  ///
+  /// When `false` → uses live production endpoints.
   final bool sandboxMode;
 
-  /// By default this is false.
-  /// If set to true, it will bypass the safety check that prevents
-  /// using clientId / secretKey directly in a non-sandbox environment.
-  /// Only set this to true if you fully understand the security risk.
+  /// By default this is `false`.
+  ///
+  /// If set to `true`, it bypasses the safety check that normally prevents
+  /// using [clientId]/[secretKey] in non-sandbox mode.
+  ///
+  /// ⚠️ Only set this to `true` if you **fully understand the security risk**.
   final bool overrideInsecureClientCredentials;
 
   const PaypalCheckoutView({
@@ -73,14 +150,30 @@ class PaypalCheckoutView extends StatefulWidget {
 }
 
 class _PaypalCheckoutViewState extends State<PaypalCheckoutView> {
+  /// Holds the created PayPal payment/order info (approvalUrl, orderId, etc.).
   PaypalPaymentModel? paymentModel;
+
+  /// Underlying service implementation:
+  /// - [PaypalServicesV1] or [PaypalServicesV2].
   late PaypalServicesBase services;
 
+  /// Web loading progress (0.0–1.0).
   double progress = 0;
+
+  /// Controller for the embedded InAppWebView.
   late InAppWebViewController webView;
 
+  /// Convenience getter to check if the widget is configured for V1.
   bool get _isV1 => widget.version == PayPalApiVersion.v1;
 
+  /// Initializes the PayPal flow:
+  ///
+  /// 1. Chooses the correct service (V1 or V2).
+  /// 2. Validates order/service version compatibility.
+  /// 3. Calls [PaypalServicesBase.initialize] to:
+  ///    - Either use [approvalUrl] (backend flow)
+  ///    - Or create the order/payment directly (client flow).
+  /// 4. Stores the resulting [PaypalPaymentModel] in state.
   Future<void> _initializePayment() async {
     // Pick the correct service implementation based on the order type
     if (_isV1) {
@@ -103,6 +196,7 @@ class _PaypalCheckoutViewState extends State<PaypalCheckoutView> {
       );
     }
 
+    // Optional safety: ensure order type matches selected service version.
     if (widget.payPalOrder != null) {
       final isOrderV1 = widget.payPalOrder!.isV1;
       final isServiceV1 = services is PaypalServicesV1;
@@ -158,6 +252,7 @@ class _PaypalCheckoutViewState extends State<PaypalCheckoutView> {
 
   @override
   Widget build(BuildContext context) {
+    // While payment/order is initializing → show a loading screen.
     if (paymentModel == null) {
       return Scaffold(
         appBar: AppBar(
@@ -172,6 +267,7 @@ class _PaypalCheckoutViewState extends State<PaypalCheckoutView> {
       );
     }
 
+    // Once we have a paymentModel with approvalUrl → render the webview.
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -228,6 +324,11 @@ class _PaypalCheckoutViewState extends State<PaypalCheckoutView> {
     );
   }
 
+  /// Handles the PayPal return URL after approval.
+  ///
+  /// Delegates to:
+  /// - [_executePaymentV1] for V1 flows.
+  /// - [_captureOrderV2] for V2 flows.
   Future<void> _handleReturnUrl(Uri? url, BuildContext context) async {
     // Don't try to be smart here — just delegate.
     if (_isV1) {
@@ -237,11 +338,20 @@ class _PaypalCheckoutViewState extends State<PaypalCheckoutView> {
     }
   }
 
+  /// Completes the V1 payment using the `execute` URL and `PayerID`.
+  ///
+  /// Behavior:
+  /// - If [paymentModel.accessToken] or [paymentModel.executeUrl] is `null`,
+  ///   this indicates a backend-driven execution/capture flow → we simply call
+  ///   [onUserPayment] with `response = null` and return.
+  /// - Otherwise:
+  ///   - Extracts `PayerID` from the return URL query.
+  ///   - Calls [PaypalServicesV1.executePayment].
+  ///   - Returns the result via [onUserPayment] or [onError].
   Future<void> _executePaymentV1(Uri? url) async {
     final model = paymentModel;
     if (model == null) return;
 
-    // ✅ Same as your original:
     // If you're in the new flow where the backend will execute/capture,
     // you can just exit early when there's no token/executeUrl.
     if (model.accessToken == null || model.executeUrl == null) {
@@ -287,11 +397,19 @@ class _PaypalCheckoutViewState extends State<PaypalCheckoutView> {
     );
   }
 
+  /// Captures a V2 order after the user returns from PayPal.
+  ///
+  /// Behavior:
+  /// - If [paymentModel.accessToken] or [paymentModel.orderId] is `null`,
+  ///   this indicates a backend-driven capture flow → we simply call
+  ///   [onUserPayment] with `response = null` and return.
+  /// - Otherwise:
+  ///   - Calls [PaypalServicesV2.captureOrder].
+  ///   - Returns the result via [onUserPayment] or [onError].
   Future<void> _captureOrderV2() async {
     final model = paymentModel;
     if (model == null) return;
 
-    // ✅ Same as your original:
     // If you're in the new flow where the backend will execute/capture,
     // you can just exit early when there's no token/orderId.
     if (model.accessToken == null || model.orderId == null) {

@@ -1,18 +1,25 @@
 /// PayPal Orders V2 `shipping_preference`
 ///
-/// Controls how shipping addresses are handled during checkout.
+/// Controls how PayPal handles shipping addresses during checkout.
+///
+/// Maps to:
+/// `application_context.shipping_preference`
+///
+/// - **GET_FROM_FILE**
+///   Use buyer’s PayPal-saved address.
+///
+/// - **NO_SHIPPING**
+///   No address required (digital items, services, subscriptions).
+///
+/// - **SET_PROVIDED_ADDRESS**
+///   Use the address in your API request.
+///   ❗ Buyer cannot change it on PayPal.
 enum PayPalShippingPreferenceV2 {
-  /// Use the buyer’s saved PayPal address.
   getFromFile,
-
-  /// No shipping address is needed (digital goods, subscriptions, services).
   noShipping,
-
-  /// Use the address provided in the order payload.
-  /// User cannot change it on PayPal.
   setProvidedAddress;
 
-  /// Convert enum → API string
+  /// Converts enum → PayPal API string.
   String get value {
     switch (this) {
       case PayPalShippingPreferenceV2.getFromFile:
@@ -24,7 +31,9 @@ enum PayPalShippingPreferenceV2 {
     }
   }
 
-  /// Convert API string → enum
+  /// Converts API string → enum value.
+  ///
+  /// Throws [ArgumentError] for unknown values.
   static PayPalShippingPreferenceV2 fromString(String raw) {
     switch (raw) {
       case "GET_FROM_FILE":

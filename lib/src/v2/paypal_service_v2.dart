@@ -1,17 +1,33 @@
-library paypal_v2;
-
+/// PayPal Orders API V2 integration layer.
+///
+/// This library provides a concrete implementation of [PaypalServicesBase]
+/// that talks to the modern **PayPal Orders V2 API**:
+///
+/// - `POST /v2/checkout/orders`          → Create order
+/// - `POST /v2/checkout/orders/{id}/capture` → Capture an approved order
 import 'dart:async';
 import 'dart:convert';
 
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter_paypal_payment_checkout_v2/src/functions/safe_api_call.dart';
+import 'package:flutter_paypal_payment_checkout_v2/src/functions/paypal_safe_api_call.dart';
 import 'package:flutter_paypal_payment_checkout_v2/src/models/paypal_payment_model.dart';
 import 'package:flutter_paypal_payment_checkout_v2/src/models/paypal_services_base.dart';
-import 'package:flutter_paypal_payment_checkout_v2/src/models/shared_models.dart';
+import 'package:flutter_paypal_payment_checkout_v2/src/models/paypal_shared_models.dart';
 
-import 'models/pay_pal_order_request_v2.dart';
+import 'models/paypal_order_request_v2.dart';
 
+/// Concrete PayPal service for the **Orders API V2**.
+///
+/// Extends [PaypalServicesBase] and implements:
+///
+/// - [createPaypalPayment] to create an order
+/// - [captureOrder] to capture a previously approved order
+///
+/// This implementation:
+/// - Uses the shared [payPalSafeApiCall] wrapper for consistent error handling.
+/// - Extracts the `approve` / `payer-action` link from the V2 response.
+/// - Wraps results into [PaypalPaymentModel] and [PayPalSuccessPaymentModel].
 class PaypalServicesV2 extends PaypalServicesBase {
   PaypalServicesV2({
     required String? clientId,
@@ -27,6 +43,29 @@ class PaypalServicesV2 extends PaypalServicesBase {
           overrideInsecureClientCredentials: overrideInsecureClientCredentials,
         );
 
+  /// Creates a PayPal **Orders V2** checkout order.
+  ///
+  /// Calls:
+  /// ```http
+  /// POST /v2/checkout/orders
+  /// Authorization: Bearer {accessToken}
+  /// Content-Type: application/json
+  /// ```
+  ///
+  /// Steps:
+  /// 1. Casts [payPalOrder] to [PayPalOrderRequestV2].
+  /// 2. Sends the order payload to `/v2/checkout/orders`.
+  /// 3. Parses the `links` array to find the first link with:
+  ///    - `rel = "approve"` or
+  ///    - `rel = "payer-action"`.
+  /// 4. Validates presence of the approval URL.
+  /// 5. Returns:
+  ///    - `Right(PaypalPaymentModel)` with:
+  ///       - `approvalUrl`
+  ///       - `orderId`
+  ///       - `status`
+  ///       - `returnURL` / `cancelURL` from [PayPalPaymentSourceV2]
+  ///    - `Left(PayPalErrorModel)` on any error.
   @override
   Future<Either<PayPalErrorModel, PaypalPaymentModel>> createPaypalPayment({
     required PayPalOrderRequestBase payPalOrder,
@@ -34,7 +73,7 @@ class PaypalServicesV2 extends PaypalServicesBase {
   }) async {
     payPalOrder as PayPalOrderRequestV2;
 
-    final result = await safeApiCall(
+    final result = await payPalSafeApiCall(
       () => Dio().post(
         '$baseUrl/v2/checkout/orders',
         data: jsonEncode(payPalOrder.toJson()),
@@ -96,8 +135,7 @@ class PaypalServicesV2 extends PaypalServicesBase {
             code: response.statusCode ?? 200,
             status: status,
             executeUrl: null,
-            // adjust depending on your model shape:
-            // e.g. paymentSource.paypal.experienceContext.returnUrl
+            // Comes from the V2 payment source experience context
             returnURL: payPalOrder.paymentSource.returnUrl,
             cancelURL: payPalOrder.paymentSource.cancelUrl,
           ),
@@ -106,11 +144,26 @@ class PaypalServicesV2 extends PaypalServicesBase {
     );
   }
 
+  /// Captures an existing **Orders V2** order.
+  ///
+  /// This should be called **after** the buyer approves the order using
+  /// the approval URL returned from [createPaypalPayment].
+  ///
+  /// Calls:
+  /// ```http
+  /// POST /v2/checkout/orders/{orderId}/capture
+  /// Authorization: Bearer {accessToken}
+  /// Content-Type: application/json
+  /// ```
+  ///
+  /// Returns:
+  /// - `Right(PayPalSuccessPaymentModel)` on successful capture.
+  /// - `Left(PayPalErrorModel)` on any error (network or API).
   Future<Either<PayPalErrorModel, PayPalSuccessPaymentModel>> captureOrder(
     String orderId,
     String accessToken,
   ) async {
-    final result = await safeApiCall(
+    final result = await payPalSafeApiCall(
       () => Dio().post(
         '$baseUrl/v2/checkout/orders/$orderId/capture',
         options: Options(
