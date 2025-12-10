@@ -1,42 +1,67 @@
-# Flutter PayPal Payment
+# 🌟 Flutter PayPal Payment Checkout V2
 
-A powerful, easy-to-use Flutter package that enables **seamless PayPal checkout flows** using:
+[![pub package](https://img.shields.io/pub/v/flutter_paypal_payment_checkout_v2.svg)](https://pub.dev/packages/flutter_paypal_payment_checkout_v2)
+![License](https://img.shields.io/badge/License-MIT-blue.svg)
+![Flutter](https://img.shields.io/badge/Flutter-%E2%9D%A4-blue)
 
-* **PayPal Payments / Orders API V2 (recommended)**
-* **Legacy Payments API V1 (deprecated by PayPal, but still supported)**
+A modern, safe, and powerful Flutter package for integrating **PayPal Checkout** using:
 
-This package supports:
+* **PayPal Orders API V2 (Recommended for all new apps)**
+* **Legacy PayPal Payments API V1 (For compatibility only)**
 
-* Secure backend-driven order creation
-* Client-side sandbox testing
-* In-app WebView checkout experience
-* Custom transaction models
-* Full capture flow for PayPal V2
+Includes a full in-app WebView checkout, typed models, sandbox tools, and secure backend flows.
 
 ---
 
-## ✨ Features
+# ❤️ Support the Project
 
-* 🔒 **Production-ready PayPal V2 flow** (backend creates + captures order)
-* 🧪 **Sandbox testing mode**
-* ⚙️ **Full PayPal Orders API V2 request/response models**
-* 💳 **Line items, shipping, taxes, preferences & more**
-* 🌐 **Custom return & cancel URL schemes** (e.g., `paypal-sdk://success`)
-* 🎯 **Callbacks for success, error, cancellation**
-* 🚀 **Supports PayPal API V1 for backward compatibility**
+If this package saved you development time, please consider supporting the work behind it:
+
+### **PayPal Donation**
+
+👉 [https://paypal.me/mazenelgayar](https://paypal.me/mazenelgayar)
+
+### **InstaPay**
+
+👉 [https://ipn.eg/S/mazenel-gayarcib/instapay/0ecfXw](https://ipn.eg/S/mazenel-gayarcib/instapay/0ecfXw)
+**Tag:** `mazenel-gayarcib@instapay`
+
+Your support directly motivates further updates, improvements, and new features.
+Thank you! ❤️🙏
 
 ---
 
-## 📦 Installation
+# 🚀 Features
 
-Add to `pubspec.yaml`:
+* 🔒 **Production-safe PayPal Orders V2 support** (create + capture)
+* 🧾 Fully typed request/response models for V1 & V2 APIs
+* 🌐 Custom return/cancel URL schemes (`paypal-sdk://success`)
+* 🧪 Sandbox-friendly client-side payments
+* 🎯 Easy success / error / cancellation callbacks
+* 🧰 Integrated WebView + progress indicator
+* 🛠 Backward compatible with PayPal Payments API V1
+* 🔐 Strong security protections against exposing client secrets
+
+---
+
+# ⚠️ Security Warning
+
+### **DO NOT PUT YOUR PAYPAL SECRET KEY IN A MOBILE APP IN PRODUCTION.**
+
+Flutter code can always be decompiled.
+
+✔ In production → always use **backend-created orders**
+✔ In sandbox → it's safe to use local clientId + secretKey
+✔ Never enable `overrideInsecureClientCredentials` in live mode
+
+---
+
+# 📦 Installation
 
 ```yaml
 dependencies:
   flutter_paypal_payment_checkout_v2: ^2.0.2
 ```
-
-Install:
 
 ```bash
 flutter pub get
@@ -44,163 +69,206 @@ flutter pub get
 
 ---
 
-# 🚀 Usage
+# 🧭 Choosing an API Version
 
-You can choose between:
+| API                   | Recommended?  | Notes                                            |
+| --------------------- | ------------- | ------------------------------------------------ |
+| **V2 (Orders API)**   | ✅ Yes         | Modern, secure, officially recommended by PayPal |
+| **V1 (Payments API)** | ⚠️ Deprecated | Older, but still supported for legacy apps       |
 
 ---
 
-# ✅ **Using PayPal API V2 (Recommended)**
-
-V2 supports **modern PayPal features**, is more secure, and is PayPal’s officially recommended API.
-
-### **Secure Backend Flow**
-
-🔐 **In production, you MUST create and capture orders on your backend.**
-Your backend returns only the approval URL.
+# 🟦 Example: PayPal Orders API V2 (Recommended)
 
 ```dart
-Navigator.push(
-  context,
-  MaterialPageRoute(
-    builder: (context) => PaypalCheckoutViewV2(
-      sandboxMode: true,
-
-      /// Recommended: backend returns approval URL
-      approvalUrl: () async {
-        // Your backend should return a full checkout URL
-        return await myBackend.createPaypalOrder();
-      },
-
-      /// Called when user finishes checkout and redirects back to app
-      onSuccess: (result) {
-        print("Payment success: $result");
-        Navigator.pop(context);
-      },
-
-      onError: (error) {
-        print("Error: $error");
-        Navigator.pop(context);
-      },
-
-      onCancel: () {
-        print("Payment cancelled");
-        Navigator.pop(context);
-      },
+void _startV2Flow(BuildContext context) {
+  final order = PayPalOrderRequestV2(
+    intent: PayPalOrderIntentV2.capture,
+    paymentSource: PayPalPaymentSourceV2(
+      paymentMethodPreference:
+          PayPalPaymentMethodPreferenceV2.immediatePaymentRequired,
+      shippingPreference: PayPalShippingPreferenceV2.noShipping,
     ),
-  ),
-);
-```
-
----
-
-### **Client-Side Flow (Sandbox Only)**
-
-⚠️ **Never use this in production.
-It exposes your PayPal clientId + secretKey.**
-
-```dart
-Navigator.push(
-  context,
-  MaterialPageRoute(
-    builder: (context) => PaypalCheckoutViewV2(
-      sandboxMode: true,
-      clientId: "SANDBOX_CLIENT_ID",
-      secretKey: "SANDBOX_SECRET_KEY",
-      overrideInsecureClientCredentials: true, // allow local tokens
-
-      getAccessToken: () async => null,
-
-      transactions: PayPalOrderRequestV2(
-        intent: PayPalOrderIntent.capture,
-        // amount, items, shipping, etc...
-      ),
-
-      onSuccess: (PayPalCaptureOrderResponse res) {
-        print("Captured: ${res.status}");
-      },
-
-      onError: (error) => print(error),
-      onCancel: () => print("Cancelled"),
-    ),
-  ),
-);
-```
-
----
-
-# 🟡 **Legacy PayPal V1 Checkout (Optional)**
-
-PayPal V1 is older and deprecated, but supported for compatibility.
-
-```dart
-Navigator.push(
-  context,
-  MaterialPageRoute(
-    builder: (context) => PaypalCheckoutViewV1(
-      sandboxMode: true,
-      clientId: "ONLY FOR SANDBOX",
-      secretKey: "ONLY FOR SANDBOX",
-      getAccessToken: null,   // MUST be handled by your backend in live mode
-
-      transactions: PaypalTransactionV1(
-        amount: PaypalTransactionV1Amount(
-          subTotal: 100.0,
-          tax: 0.0,
-          shipping: 0.0,
-          handlingFee: 0.0,
-          shippingDiscount: 0.0,
-          insurance: 0.0,
-          total: 100.0,
+    purchaseUnits: [
+      PayPalPurchaseUnitV2(
+        amount: PayPalAmountV2(
           currency: 'USD',
+          value: 100.0,
+          itemTotal: 100.0,
+          taxTotal: 0.0,
         ),
-        description: "Order description",
         items: [
-          PaypalTransactionV1Item(
-            name: "Apple",
-            quantity: 4,
-            price: 10.0,
-            tax: 0.0,
-            currency: "USD",
-            sku: "SKU_APPLE",
-            description: "Fresh apples",
+          PaypalTransactionV2Item(
+            name: 'Apple',
+            description: 'Fresh apples',
+            quantity: 2,
+            unitAmount: 50.0,
+            currency: 'USD',
+            category: PayPalItemCategoryV2.physicalGoods,
           ),
         ],
       ),
+    ],
+  );
 
-      onSuccess: (params) {
-        print("Success: $params");
-      },
-      onError: (error) => print("Error: $error"),
-      onCancel: () => print("Cancelled"),
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (_) => PaypalCheckoutView(
+        version: PayPalApiVersion.v2,
+        sandboxMode: true,
+        clientId: "SANDBOX_CLIENT_ID",
+        secretKey: "SANDBOX_SECRET_KEY",
+        getAccessToken: null,
+        approvalUrl: null,
+        payPalOrder: order,
+        onUserPayment: (success, payment) {
+          print("Order Captured: ${success?.data}");
+        },
+        onError: (err) => print("Error: ${err.message}"),
+        onCancel: () => print("Cancelled"),
+      ),
     ),
-  ),
+  );
+}
+```
+
+---
+
+# 🟡 Example: PayPal Payments API V1 (Legacy)
+
+```dart
+void _startV1Flow(BuildContext context) {
+  final tx = PaypalTransactionV1(
+    amount: PaypalTransactionV1Amount(
+      subTotal: 100,
+      tax: 0,
+      shipping: 0,
+      handlingFee: 0,
+      shippingDiscount: 0,
+      insurance: 0,
+      total: 100,
+      currency: 'USD',
+    ),
+    description: "Payment for apples",
+    items: [
+      PaypalTransactionV1Item(
+        name: "Apple",
+        quantity: 4,
+        price: 10,
+        tax: 0,
+        currency: "USD",
+      ),
+    ],
+  );
+
+  final order = PayPalOrderRequestV1(
+    intent: PayPalOrderIntentV1.sale,
+    transactions: [tx],
+    noteToPayer: "Thank you for your purchase!",
+  );
+
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (_) => PaypalCheckoutView(
+        version: PayPalApiVersion.v1,
+        sandboxMode: true,
+        clientId: "SANDBOX_CLIENT_ID",
+        secretKey: "SANDBOX_SECRET_KEY",
+        getAccessToken: null,
+        approvalUrl: null,
+        payPalOrder: order,
+        onUserPayment: (success, payment) {
+          print("V1 execute response: ${success?.data}");
+        },
+        onError: (err) => print("Error: ${err.message}"),
+        onCancel: () => print("Cancelled"),
+      ),
+    ),
+  );
+}
+```
+
+---
+
+# 🧪 Sandbox-only Client-side Flow
+
+⚠️ **Never use this in production.**
+
+```dart
+PaypalCheckoutView(
+  version: PayPalApiVersion.v2,
+  sandboxMode: true,
+  clientId: "SANDBOX_CLIENT_ID",
+  secretKey: "SANDBOX_SECRET_KEY",
+  overrideInsecureClientCredentials: true,
+  payPalOrder: simpleV2Order,
+  getAccessToken: null,
+  approvalUrl: null,
+  onUserPayment: (success, payment) => print(success?.data),
+  onError: print,
+  onCancel: () => print("Cancelled"),
 );
 ```
 
 ---
 
-# 🔐 Security Notes (Important)
+# 📚 Documentation
 
-### **DO NOT PUT YOUR PAYPAL SECRET KEY IN A MOBILE APP FOR PRODUCTION.**
+This package includes strongly-typed models for:
 
-Flutter code can be extracted even from release builds.
+### ✔ PayPal Orders API V2
 
-✔ Use backend mode (`approvalUrl`) for all real payments
-✔ Limit local credentials to **sandbox only**
-✔ Set `overrideInsecureClientCredentials` **only for testing**
+* `PayPalOrderRequestV2`
+* `PayPalPurchaseUnitV2`
+* `PayPalAmountV2`
+* `PayPalPaymentSourceV2`
+* `PayPalItemCategoryV2`
+* `PayPalCaptureOrderResponse`
+
+### ✔ PayPal Payments API V1
+
+* `PayPalOrderRequestV1`
+* `PaypalTransactionV1`
+* `PaypalTransactionV1Item`
+* `PayPalAllowedPaymentMethodV1`
+
+### ✔ Core Models
+
+* `PaypalPaymentModel`
+* `PayPalErrorModel`
+* `PayPalSuccessPaymentModel`
 
 ---
 
-# ❤️ Donate
+# 🔐 Security Best Practices
 
-If you would like to support this package:
+| Task                                     | Production | Sandbox            |
+| ---------------------------------------- | ---------- | ------------------ |
+| Create Orders                            | Backend    | Client or backend  |
+| Capture Orders                           | Backend    | Client or backend  |
+| Use clientId / secretKey in app          | ❌ NEVER    | ✔ Allowed          |
+| Use return/cancel URLs                   | Required   | Optional           |
+| Enable overrideInsecureClientCredentials | ❌ NEVER    | ✔ Only for testing |
 
-**PayPal:**  
-[https://paypal.me/mazenelgayar](https://paypal.me/mazenelgayar)
+---
 
-**InstaPay:**  
-https://ipn.eg/S/mazenel-gayarcib/instapay/0ecfXw  
-**Tag:** `mazenel-gayarcib@instapay`
+# 🔧 Advanced Tips
 
-Thank you for your support!
+### Custom URL schemes
+
+You may safely use:
+
+```
+paypal-sdk://success
+paypal-sdk://cancel
+```
+
+Useful for mobile deep linking.
+
+---
+
+# 📄 License
+
+MIT © 2025 [Mazen El-Gayar](https://github.com/MazenxELGayar)
