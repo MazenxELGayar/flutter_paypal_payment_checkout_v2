@@ -49,4 +49,3 @@ class PayPalOrderRequestV1 extends PayPalOrderRequestBase {
   @override
   bool get isV2 => false;
 }
-

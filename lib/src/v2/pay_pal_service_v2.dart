@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_paypal_payment_checkout_v2/src/functions/safe_api_call.dart';
 import 'package:flutter_paypal_payment_checkout_v2/src/models/paypal_payment_model.dart';
 import 'package:flutter_paypal_payment_checkout_v2/src/models/paypal_services_base.dart';
 import 'package:flutter_paypal_payment_checkout_v2/src/models/shared_models.dart';
@@ -37,11 +38,10 @@ class PaypalServicesV2 extends PaypalServicesBase {
     required PayPalOrderRequestBase payPalOrder,
     required String accessToken,
   }) async {
-    // Downcast to the concrete V2 type
     payPalOrder as PayPalOrderRequestV2;
 
-    try {
-      final response = await Dio().post(
+    final result = await safeApiCall(
+      () => Dio().post(
         '$baseUrl/v2/checkout/orders',
         data: jsonEncode(payPalOrder.toJson()),
         options: Options(
@@ -50,73 +50,74 @@ class PaypalServicesV2 extends PaypalServicesBase {
             'Content-Type': 'application/json',
           },
         ),
-      );
+      ),
+      networkErrorKey: "NETWORK_ORDER_CREATE_FAILED",
+      networkErrorMessage: "Network error: Failed to create order",
+      unknownErrorKey: "ORDER_CREATE_FAILED",
+      unknownErrorMessage: "Failed to create order",
+    );
 
-      final body = response.data;
+    return result.fold(
+      (error) => Left(error),
+      (response) {
+        final body = response.data;
 
-      // Links is a List<dynamic>, each is Map<String, dynamic>
-      final List<dynamic> linksRaw = body['links'] ?? [];
-      Map<String, dynamic>? approvalLink;
+        // Links is a List<dynamic>, each is Map<String, dynamic>
+        final List<dynamic> linksRaw = body['links'] ?? [];
+        Map<String, dynamic>? approvalLink;
 
-      for (final raw in linksRaw) {
-        final link = raw as Map<String, dynamic>;
-        final rel = link['rel'] as String?;
-        if (rel == 'approve' || rel == 'payer-action') {
-          approvalLink = link;
-          break;
+        for (final raw in linksRaw) {
+          final link = raw as Map<String, dynamic>;
+          final rel = link['rel'] as String?;
+          if (rel == 'approve' || rel == 'payer-action') {
+            approvalLink = link;
+            break;
+          }
         }
-      }
 
-      final href = approvalLink?['href'] as String?;
+        final href = approvalLink?['href'] as String?;
 
-      if (href == null || href.isEmpty) {
-        return Left(
-          PayPalErrorModel(
-            error: body,
-            message:
-                "Missing approval link (no 'approve' or 'payer-action' link found)",
-            key: "ORDER_CREATE_NO_APPROVE_LINK",
-            code: response.statusCode ?? 500,
+        if (href == null || href.isEmpty) {
+          return Left(
+            PayPalErrorModel(
+              error: body,
+              message:
+                  "Missing approval link (no 'approve' or 'payer-action' link found)",
+              key: "ORDER_CREATE_NO_APPROVE_LINK",
+              code: response.statusCode ?? 500,
+            ),
+          );
+        }
+
+        final orderId = body['id'] as String?;
+        final status = body['status'] as String?;
+
+        return Right(
+          PaypalPaymentModel(
+            orderId: orderId,
+            approvalUrl: href,
+            message: "Order created successfully",
+            key: "ORDER_CREATE_SUCCESS",
+            accessToken: accessToken,
+            code: response.statusCode ?? 200,
+            status: status,
+            executeUrl: null,
+            // adjust depending on your model shape:
+            // e.g. paymentSource.paypal.experienceContext.returnUrl
+            returnURL: payPalOrder.paymentSource.returnUrl,
+            cancelURL: payPalOrder.paymentSource.cancelUrl,
           ),
         );
-      }
-
-      final orderId = body['id'] as String?;
-      final status = body['status'] as String?;
-
-      return Right(
-        PaypalPaymentModel(
-          orderId: orderId,
-          approvalUrl: href,
-          message: "Order created successfully",
-          key: "ORDER_CREATE_SUCCESS",
-          accessToken: accessToken,
-          code: response.statusCode ?? 200,
-          status: status,
-          executeUrl: null,
-          // experienceContext is your V2 source of URLs
-          returnURL: payPalOrder.paymentSource.returnUrl,
-          cancelURL: payPalOrder.paymentSource.cancelUrl,
-        ),
-      );
-    } catch (e) {
-      return Left(
-        PayPalErrorModel(
-          error: e.toString(),
-          message: "Failed to create order",
-          key: "ORDER_CREATE_FAILED",
-          code: 500,
-        ),
-      );
-    }
+      },
+    );
   }
 
   Future<Either<PayPalErrorModel, PayPalSuccessPaymentModel>> captureOrder(
     String orderId,
     String accessToken,
   ) async {
-    try {
-      final response = await Dio().post(
+    final result = await safeApiCall(
+      () => Dio().post(
         '$baseUrl/v2/checkout/orders/$orderId/capture',
         options: Options(
           headers: {
@@ -124,25 +125,25 @@ class PaypalServicesV2 extends PaypalServicesBase {
             'Content-Type': 'application/json',
           },
         ),
-      );
-      return Right(
-        PayPalSuccessPaymentModel(
-          code: response.statusCode ?? 200,
-          key: "ORDER_CAPTURE_SUCCESS",
-          message: "Order captured successfully",
-          data: response.data,
-        ),
-      );
-    } catch (e) {
-      return Left(
-        PayPalErrorModel(
-          error: e.toString(),
-          message: "Failed to capture order",
-          key: "ORDER_CAPTURE_FAILED",
-          code: 500,
-        ),
-      );
-    }
-  }
+      ),
+      networkErrorKey: "NETWORK_ORDER_CAPTURE_FAILED",
+      networkErrorMessage: "Network error: Failed to capture order",
+      unknownErrorKey: "ORDER_CAPTURE_FAILED",
+      unknownErrorMessage: "Failed to capture order",
+    );
 
+    return result.fold(
+      (error) => Left(error),
+      (response) {
+        return Right(
+          PayPalSuccessPaymentModel(
+            code: response.statusCode ?? 200,
+            key: "ORDER_CAPTURE_SUCCESS",
+            message: "Order captured successfully",
+            data: response.data,
+          ),
+        );
+      },
+    );
+  }
 }
