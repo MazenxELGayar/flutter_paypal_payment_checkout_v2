@@ -2,7 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
-# **2.0.1**
+## 2.0.2 — 2025-12-10
+- Added a donation link.
+
+**PayPal:**  
+[https://paypal.me/mazenelgayar](https://paypal.me/mazenelgayar)
+
+**InstaPay:**  
+https://ipn.eg/S/mazenel-gayarcib/instapay/0ecfXw  
+**Tag:** `mazenel-gayarcib@instapay`
+
+# **2.0.1** — 2025-12-10
 
 🧩 **Unified V1 + V2 API with shared models and services**
 
@@ -62,7 +72,7 @@ This release builds on top of the V2 Orders support and introduces a **unified, 
 
 ---
 
-# **2.0.0**
+# **2.0.0** — 2025-12-9
 
 🚀 **Major rewrite with full PayPal Orders API v2 support**
 
@@ -111,7 +121,7 @@ This release introduces a complete overhaul of the payment flow, API models, and
 
 ---
 
-# **1.0.8**
+# **1.0.8** - Legacy
 
 This package simplifies integrating PayPal payments into your mobile app.
 Key features include:

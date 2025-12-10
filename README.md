@@ -33,7 +33,7 @@ Add to `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  flutter_paypal_payment_checkout_v2: ^2.0.1
+  flutter_paypal_payment_checkout_v2: ^2.0.2
 ```
 
 Install:
@@ -196,7 +196,11 @@ Flutter code can be extracted even from release builds.
 
 If you would like to support this package:
 
-**PayPal:**
+**PayPal:**  
 [https://paypal.me/mazenelgayar](https://paypal.me/mazenelgayar)
+
+**InstaPay:**  
+https://ipn.eg/S/mazenel-gayarcib/instapay/0ecfXw  
+**Tag:** `mazenel-gayarcib@instapay`
 
 Thank you for your support!
