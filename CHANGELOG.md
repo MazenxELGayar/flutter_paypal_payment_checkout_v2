@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.0.3 — 2025-12-10
+- Added Tharwat to the contributors.
+
 ## 2.0.2 — 2025-12-10
 - Added a donation link.
 
