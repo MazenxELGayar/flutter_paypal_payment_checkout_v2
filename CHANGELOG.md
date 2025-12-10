@@ -6,7 +6,7 @@ Here is a clean, professional, publish-ready changelog entry for your update:
 
 ---
 
-## **2.0.6 — 2025-12-10**
+## **2.0.7 — 2025-12-10**
 
 ### 🛠 Refactor & Stability Improvements
 
