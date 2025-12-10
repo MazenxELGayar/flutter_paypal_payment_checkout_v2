@@ -10,15 +10,7 @@ import 'package:flutter_paypal_payment_checkout_v2/src/models/paypal_payment_mod
 import 'package:flutter_paypal_payment_checkout_v2/src/models/paypal_services_base.dart';
 import 'package:flutter_paypal_payment_checkout_v2/src/models/shared_models.dart';
 
-import 'enums/pay_pal_item_category_v2.dart';
-import 'enums/pay_pal_landing_page_v2.dart';
-import 'enums/pay_pal_order_intent_v2.dart';
-import 'enums/pay_pal_payment_method_preference_v2.dart';
-import 'enums/pay_pal_shipping_preference_v2.dart';
-import 'enums/pay_pal_user_action_v2.dart';
-import 'models/pay_pal_experience_context_v2.dart';
 import 'models/pay_pal_order_request_v2.dart';
-import 'models/pay_pal_purchase_unit_v2.dart';
 
 class PaypalServicesV2 extends PaypalServicesBase {
   PaypalServicesV2({

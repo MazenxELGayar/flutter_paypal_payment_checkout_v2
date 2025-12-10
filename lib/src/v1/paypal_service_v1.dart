@@ -9,13 +9,7 @@ import 'package:flutter_paypal_payment_checkout_v2/src/functions/safe_api_call.d
 import 'package:flutter_paypal_payment_checkout_v2/src/models/paypal_payment_model.dart';
 import 'package:flutter_paypal_payment_checkout_v2/src/models/paypal_services_base.dart';
 import 'package:flutter_paypal_payment_checkout_v2/src/models/shared_models.dart';
-import 'enums/pay_pal_allowed_payment_method_v1.dart';
-import 'enums/pay_pal_order_intent_v1.dart';
 import 'models/pay_pal_order_request_v1.dart';
-import 'models/pay_pal_shipping_address_v1.dart';
-import 'models/paypal_transaction_v1.dart';
-import 'models/paypal_transaction_v1_amount.dart';
-import 'models/paypal_transaction_v1_item.dart';
 
 class PaypalServicesV1 extends PaypalServicesBase {
   PaypalServicesV1({
