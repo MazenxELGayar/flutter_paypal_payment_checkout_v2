@@ -1,3 +1,7 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
 # **2.0.1**
 
 🧩 **Unified V1 + V2 API with shared models and services**
