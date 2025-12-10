@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.0.5 — 2025-12-10
+- Fixed Bug where V1 and V2 Models couldn't be imported.
+- Removed WEB Support.
+
 ## 2.0.4 — 2025-12-10
 - Forgot to export models, all models and services are now usable.
 

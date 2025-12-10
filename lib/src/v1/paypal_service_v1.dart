@@ -1,3 +1,5 @@
+library paypal_v1;
+
 import 'dart:async';
 import 'dart:convert';
 
