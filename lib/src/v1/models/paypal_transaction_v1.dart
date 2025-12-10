@@ -8,7 +8,7 @@ class PaypalTransactionV1 {
   final PayPalShippingAddressV1? shippingAddress;
 
   final String? invoiceNumber;
-  final Map<String, dynamic>? paymentOptions;
+  final PayPalAllowedPaymentMethodV1? payPalAllowedPaymentMethod;
   final String? softDescriptor;
 
   PaypalTransactionV1({
@@ -18,7 +18,7 @@ class PaypalTransactionV1 {
     required this.items,
     this.shippingAddress,
     this.invoiceNumber,
-    this.paymentOptions,
+    this.payPalAllowedPaymentMethod,
     this.softDescriptor,
   });
 
@@ -38,8 +38,10 @@ class PaypalTransactionV1 {
       map["invoice_number"] = invoiceNumber;
     }
 
-    if (paymentOptions != null) {
-      map["payment_options"] = paymentOptions;
+    if (payPalAllowedPaymentMethod != null) {
+      map["payment_options"] = {
+        "allowed_payment_method": payPalAllowedPaymentMethod?.value,
+      };
     }
 
     if (softDescriptor != null) {

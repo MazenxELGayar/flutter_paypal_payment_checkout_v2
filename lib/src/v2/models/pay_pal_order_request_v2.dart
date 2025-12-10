@@ -2,7 +2,7 @@ part of '../pay_pal_service_v2.dart';
 
 /// -------------------- ORDER REQUEST --------------------
 
-class PayPalOrderRequestV2 {
+class PayPalOrderRequestV2 extends PayPalOrderRequestBase {
   final PayPalOrderIntentV2 intent;
   final PayPalPaymentSourceV2 paymentSource;
   final List<PayPalPurchaseUnitV2> purchaseUnits;
@@ -13,9 +13,19 @@ class PayPalOrderRequestV2 {
     required this.purchaseUnits,
   });
 
+  @override
   Map<String, dynamic> toJson() => {
         "intent": intent.value,
         "payment_source": paymentSource.toJson(),
         "purchase_units": purchaseUnits.map((e) => e.toJson()).toList(),
       };
+
+  @override
+  bool get isEmpty => purchaseUnits.isEmpty;
+
+  @override
+  bool get isV1 => false;
+
+  @override
+  bool get isV2 => true;
 }

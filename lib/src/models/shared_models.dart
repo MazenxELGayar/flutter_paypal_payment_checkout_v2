@@ -1,3 +1,5 @@
+import 'package:flutter_paypal_payment_checkout_v2/src/models/paypal_payment_model.dart';
+
 class PayPalBaseModel {
   final String message;
   final String key;
@@ -22,7 +24,7 @@ class PayPalAccessTokenModel extends PayPalBaseModel {
 }
 
 class PayPalErrorModel extends PayPalBaseModel {
-  final dynamic error;
+  final String error;
 
   PayPalErrorModel({
     required this.error,
@@ -37,3 +39,37 @@ typedef PayPalOnError = dynamic Function(PayPalErrorModel error);
 typedef PayPalGetAccessToken = Future<String> Function();
 
 typedef PayPalTransactionsFunction = Map<String, dynamic> Function();
+
+abstract class PayPalOrderRequestBase {
+  const PayPalOrderRequestBase();
+
+  /// Must be implemented by V1 and V2
+  Map<String, dynamic> toJson();
+
+  bool get isEmpty;
+
+  bool get isNotEmpty => !isEmpty;
+
+  bool get isV1;
+
+  bool get isV2;
+}
+
+const defaultReturnURL = 'paypal-sdk://success';
+const defaultCancelURL = 'paypal-sdk://cancel';
+
+typedef PayPalOnSuccess = dynamic Function(
+  PayPalSuccessPaymentModel? response,
+  PaypalPaymentModel payment,
+);
+
+class PayPalSuccessPaymentModel extends PayPalBaseModel {
+  final dynamic data; // PayPal response body
+
+  PayPalSuccessPaymentModel({
+    required this.data,
+    required super.message,
+    required super.key,
+    required super.code,
+  });
+}
