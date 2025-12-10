@@ -60,7 +60,7 @@ Flutter code can always be decompiled.
 
 ```yaml
 dependencies:
-  flutter_paypal_payment_checkout_v2: ^2.0.8
+  flutter_paypal_payment_checkout_v2: ^2.0.9
 ```
 
 ```bash
