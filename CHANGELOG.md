@@ -6,6 +6,51 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## **2.1.0 — 2025-12-11**
+
+### 🚀 Backend Flexibility, Async Validation & Error Handling Overhaul
+
+This release introduces powerful improvements to support secure, backend-driven PayPal integrations and richer error handling capabilities.
+
+### **✨ New & Updated Features**
+
+#### **Backend-Driven Checkout Flow**
+
+* Renamed `getApprovalUrl` → **`getCheckoutUrl`**.
+* Method now allows developers to fully parse backend responses and return a complete `PaypalPaymentModel` or 'PayPalErrorModel' error.
+* Enables secure production workflows where the app *never handles secret keys* or order creation — only the checkout URL.
+
+#### **Asynchronous Payment Callback**
+
+* `onUserPayment` is now **async** and returns `Either<PayPalErrorModel, T>`.
+* Developers can run backend validation **after** PayPal approval but **before** the UI completes.
+* Returning `Left(PayPalErrorModel(...))` now correctly triggers the error pathway.
+
+#### **Flexible Error Payload Structure**
+
+* `PayPalErrorModel.error` updated from `String` → **`dynamic`**.
+* Allows passing backend error objects or full PayPal API responses.
+
+#### **Dartz Re-Exported**
+
+* `dartz` is now re-exported to provide direct access to:
+
+  * `Either`
+  * `Left`
+  * `Right`
+  * `Unit`
+* Enables easier construction of custom validation results inside `onUserPayment`.
+
+#### **Localization Completion**
+
+* All remaining keys added to:
+
+  * `errors_keys.json`
+  * `messages_keys.json`
+* Ensures full localization coverage across success and error flows.
+
+---
+
 ## **2.0.9 — 2025-12-10**
 
 ### 📄 Documentation Update

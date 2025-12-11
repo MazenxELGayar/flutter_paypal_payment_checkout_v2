@@ -1,23 +1,8 @@
 import 'dart:developer';
 
+import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_paypal_payment_checkout_v2/src/paypal_checkout_view.dart';
-import 'package:flutter_paypal_payment_checkout_v2/src/v1/enums/paypal_order_intent_v1.dart';
-import 'package:flutter_paypal_payment_checkout_v2/src/v1/models/paypal_order_request_v1.dart';
-import 'package:flutter_paypal_payment_checkout_v2/src/v1/models/paypal_shipping_address_v1.dart';
-import 'package:flutter_paypal_payment_checkout_v2/src/v1/models/paypal_transaction_v1.dart';
-import 'package:flutter_paypal_payment_checkout_v2/src/v1/models/paypal_transaction_v1_amount.dart';
-import 'package:flutter_paypal_payment_checkout_v2/src/v1/models/paypal_transaction_v1_item.dart';
-import 'package:flutter_paypal_payment_checkout_v2/src/v2/enums/paypal_item_category_v2.dart';
-import 'package:flutter_paypal_payment_checkout_v2/src/v2/enums/paypal_order_intent_v2.dart';
-import 'package:flutter_paypal_payment_checkout_v2/src/v2/enums/paypal_payment_method_preference_v2.dart';
-import 'package:flutter_paypal_payment_checkout_v2/src/v2/enums/paypal_shipping_preference_v2.dart';
-import 'package:flutter_paypal_payment_checkout_v2/src/v2/models/paypal_amount_v2.dart';
-import 'package:flutter_paypal_payment_checkout_v2/src/v2/models/paypal_payment_source_v2.dart';
-import 'package:flutter_paypal_payment_checkout_v2/src/v2/models/paypal_order_request_v2.dart';
-import 'package:flutter_paypal_payment_checkout_v2/src/v2/models/paypal_purchase_unit_v2.dart';
-import 'package:flutter_paypal_payment_checkout_v2/src/v2/models/paypal_shipping_address_v2.dart';
-import 'package:flutter_paypal_payment_checkout_v2/src/v2/models/paypal_transaction_item_v2.dart';
+import 'package:flutter_paypal_payment_checkout_v2/flutter_paypal_payment_checkout_v2.dart';
 
 void main() {
   runApp(const PaypalPaymentDemo());
@@ -54,7 +39,7 @@ class PaypalDemoHome extends StatelessWidget {
             const _HelpCard(),
             const SizedBox(height: 24),
             ElevatedButton(
-              onPressed: () => _startV2Flow(context),
+              onPressed: () => _startV2MobileFlow(context),
               child: const Text('Pay with PayPal (V2 – Checkout Orders API)'),
             ),
             const SizedBox(height: 12),
@@ -69,7 +54,7 @@ class PaypalDemoHome extends StatelessWidget {
   }
 
   // ---------------- V2 EXAMPLE ----------------
-  void _startV2Flow(BuildContext context) {
+  void _startV2MobileFlow(BuildContext context) {
     // Build a simple V2 order with 1 purchase unit
     final order = PayPalOrderRequestV2(
       intent: PayPalOrderIntentV2.capture,
@@ -136,10 +121,13 @@ class PaypalDemoHome extends StatelessWidget {
           secretKey: 'ONLY FOR SANDBOX (TESTING PURPOSES ONLY)',
 
           payPalOrder: order,
-          onUserPayment: (success, payment) {
+          onUserPayment: (success, payment) async {
             log('V2 onSuccess payment: ${payment.toJson()}');
             log('V2 onSuccess capture data: ${success?.data}');
             Navigator.pop(context);
+            return const Right<PayPalErrorModel, dynamic>(
+              null,
+            );
           },
           onError: (error) {
             log('V2 onError: ${error.message} (${error.key})');
@@ -153,6 +141,50 @@ class PaypalDemoHome extends StatelessWidget {
       ),
     );
   }
+
+  // void startPayPalBackendFlow(BuildContext context, int servicePlanId) async {
+  //   final service = PayPalService(DioHelper());
+  //
+  //   // Open checkout view with backend-driven flow
+  //   await Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (_) => PaypalCheckoutView<PaypalPaymentModel>(
+  //         version: PayPalApiVersion.v2,
+  //         sandboxMode: true,
+  //         /// Pass a function that fetches the checkout URL and model from your backend
+  //         getCheckoutUrl: () async {
+  //           final result = await service.createOrder(servicePlanId: servicePlanId);
+  //           return result; // Either<PayPalErrorModel, PaypalPaymentModel>
+  //         },
+  //
+  //         onUserPayment: (success, payment) async {
+  //           print("Payment approved: ${payment.toJson()}");
+  //           print("Capture data: ${success?.data}");
+  //
+  //           // Capture via backend
+  //           final captureResult = await service.captureOrder(orderId: payment.orderId!);
+  //           captureResult.fold(
+  //                 (failure) => print("Capture failed: ${failure.message}"),
+  //                 (_) => print("Payment captured successfully"),
+  //           );
+  //
+  //           return Right<PayPalErrorModel, dynamic>(success?.data);
+  //         },
+  //
+  //         onError: (error) {
+  //           print("Checkout error: ${error.message}");
+  //           Navigator.pop(context);
+  //         },
+  //
+  //         onCancel: () {
+  //           print("Payment cancelled by user");
+  //           Navigator.pop(context);
+  //         },
+  //       ),
+  //     ),
+  //   );
+  // }
 
   // ---------------- V1 EXAMPLE ----------------
   void _startV1Flow(BuildContext context) {
@@ -231,10 +263,13 @@ class PaypalDemoHome extends StatelessWidget {
           secretKey: 'ONLY FOR SANDBOX (TESTING PURPOSES ONLY)',
 
           payPalOrder: order,
-          onUserPayment: (success, payment) {
+          onUserPayment: (success, payment) async {
             log('V1 onSuccess payment: ${payment.toJson()}');
             log('V1 onSuccess execute data: ${success?.data}');
             Navigator.pop(context);
+            return const Right<PayPalErrorModel, dynamic>(
+              null,
+            );
           },
           onError: (error) {
             log('V1 onError: ${error.message} (${error.key})');

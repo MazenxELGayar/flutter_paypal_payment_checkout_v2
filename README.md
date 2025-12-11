@@ -60,7 +60,7 @@ Flutter code can always be decompiled.
 
 ```yaml
 dependencies:
-  flutter_paypal_payment_checkout_v2: ^2.0.9
+  flutter_paypal_payment_checkout_v2: ^2.1.0
 ```
 
 ```bash
@@ -75,10 +75,59 @@ flutter pub get
 | --------------------- | ------------- | ------------------------------------------------ |
 | **V2 (Orders API)**   | ✅ Yes         | Modern, secure, officially recommended by PayPal |
 | **V1 (Payments API)** | ⚠️ Deprecated | Older, but still supported for legacy apps       |
+---
+
+# 🟦 Example: PayPal Orders API V2: BACKEND FLOW PRODUCTION (Recommended)
+
+```dart
+void startPayPalFlow(BuildContext context, int servicePlanId) async {
+  final service = PayPalService(DioHelper());
+
+  // Open checkout view with backend-driven flow
+  await Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (_) => PaypalCheckoutView<PaypalPaymentModel>(
+        version: PayPalApiVersion.v2,
+        sandboxMode: true,
+        /// Pass a function that fetches the checkout URL and model from your backend
+        getCheckoutUrl: () async {
+          final result = await service.createOrder(servicePlanId: servicePlanId);
+          return result; // Either<PayPalErrorModel, PaypalPaymentModel>
+        },
+
+        onUserPayment: (success, payment) async {
+          print("Payment approved: ${payment.toJson()}");
+          print("Capture data: ${success?.data}");
+
+          // Capture via backend
+          final captureResult = await service.captureOrder(orderId: payment.orderId!);
+          captureResult.fold(
+                (failure) => print("Capture failed: ${failure.message}"),
+                (_) => print("Payment captured successfully"),
+          );
+
+          return Right<PayPalErrorModel, dynamic>(success?.data);
+        },
+
+        onError: (error) {
+          print("Checkout error: ${error.message}");
+          Navigator.pop(context);
+        },
+
+        onCancel: () {
+          print("Payment cancelled by user");
+          Navigator.pop(context);
+        },
+      ),
+    ),
+  );
+}
+```
 
 ---
 
-# 🟦 Example: PayPal Orders API V2 (Recommended)
+# 🟦 Example: PayPal Orders API V2: Mobile Payment flow without backend
 
 ```dart
 void _startV2Flow(BuildContext context) {
@@ -122,8 +171,11 @@ void _startV2Flow(BuildContext context) {
         getAccessToken: null,
         approvalUrl: null,
         payPalOrder: order,
-        onUserPayment: (success, payment) {
+        onUserPayment: (success, payment) async {
           print("Order Captured: ${success?.data}");
+          return const Right<PayPalErrorModel, dynamic>(
+            null,
+          );
         },
         onError: (err) => print("Error: ${err.message}"),
         onCancel: () => print("Cancelled"),
@@ -179,8 +231,11 @@ void _startV1Flow(BuildContext context) {
         getAccessToken: null,
         approvalUrl: null,
         payPalOrder: order,
-        onUserPayment: (success, payment) {
-          print("V1 execute response: ${success?.data}");
+        onUserPayment: (success, payment) async {
+          print("Order Captured: ${success?.data}");
+          return const Right<PayPalErrorModel, dynamic>(
+            null,
+          );
         },
         onError: (err) => print("Error: ${err.message}"),
         onCancel: () => print("Cancelled"),

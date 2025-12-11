@@ -46,7 +46,7 @@ class PayPalAccessTokenModel extends PayPalBaseModel {
 /// standardized [message], [key], and [code] from [PayPalBaseModel].
 class PayPalErrorModel extends PayPalBaseModel {
   /// The raw error payload (can be string, JSON map, etc.).
-  final String error;
+  final dynamic error;
 
   PayPalErrorModel({
     required this.error,

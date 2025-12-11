@@ -95,3 +95,20 @@ export 'package:flutter_paypal_payment_checkout_v2/src/v2/models/paypal_transact
 export 'src/v2/models/paypal_payment_source_v2.dart';
 export 'src/v2/models/paypal_order_request_v2.dart';
 export 'src/v2/models/paypal_purchase_unit_v2.dart';
+
+// -----------------------------------------------------------------------------
+// EXTERNAL UTILITIES
+// -----------------------------------------------------------------------------
+
+/// Exporting dartz so developers can access:
+/// - Either
+/// - Left
+/// - Right
+/// - Unit
+/// - Option
+///
+/// Example usage:
+/// ```dart
+/// return Right(value);
+/// ```
+export 'package:dartz/dartz.dart';
