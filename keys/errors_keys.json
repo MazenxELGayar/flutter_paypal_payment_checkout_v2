@@ -9,5 +9,19 @@
   "PAYMENT_UNKNOWN_ERROR": "Unexpected error while creating payment.",
   "PAYMENT_EXECUTE_FAILED": "Payment execute failed",
   "PAYMENT_EXECUTE_PAYER_ID_NULL": "PayerID is null",
-  "PAYMENT_EXECUTE_UNKNOWN_ERROR": "Unexpected error while executing payment."
+  "PAYMENT_EXECUTE_UNKNOWN_ERROR": "Unexpected error while executing payment.",
+  "BACKEND_ACCESS_TOKEN_ERROR": "Unable to retrieve access token from backend.",
+  "NULL_ORDER": "PayPal order cannot be null.",
+  "EMPTY_PURCHASE_UNITS": "Purchase Units cannot be empty.",
+  "NETWORK_PAYMENT_FAILED": "Network error: Payment Failed.",
+  "MISSING_APPROVAL_URL": "Missing approval link: PayPal did not return `approval_url`.",
+  "MISSING_EXECUTE_URL": "Missing execute link: PayPal did not return `execute` URL.",
+  "MISSING_RETURN_URL": "Missing returnUrl in PayPalOrderRequestV1.",
+  "MISSING_CANCEL_URL": "Missing cancelUrl in PayPalOrderRequestV1.",
+  "NETWORK_PAYMENT_EXECUTE_FAILED": "Payment Failed.",
+  "NETWORK_ORDER_CREATE_FAILED": "Network error: Failed to create order",
+  "ORDER_CREATE_FAILED": "Failed to create order",
+  "ORDER_CREATE_NO_APPROVE_LINK": "Missing approval link (no 'approve' or 'payer-action' link found)",
+  "NETWORK_ORDER_CAPTURE_FAILED": "Network error: Failed to capture order",
+  "ORDER_CAPTURE_FAILED": "Failed to capture order"
 }
