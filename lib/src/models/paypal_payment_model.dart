@@ -1,10 +1,11 @@
+import 'package:dartz/dartz.dart';
 import 'package:flutter_paypal_payment_checkout_v2/src/models/paypal_shared_models.dart';
 
 /// A function signature that returns a `PaypalPaymentModel`.
 ///
 /// This typedef is used by services that request an approval URL from PayPal
 /// during the order creation or payment setup flow.
-typedef PayPalGetApprovalUrl = Future<PaypalPaymentModel> Function();
+typedef PayPalGetCheckOutUrl = Future<Either<PayPalErrorModel,PaypalPaymentModel>> Function();
 
 /// Represents all essential PayPal payment details required by the client
 /// to proceed with the approval, capture, or final execution flow.

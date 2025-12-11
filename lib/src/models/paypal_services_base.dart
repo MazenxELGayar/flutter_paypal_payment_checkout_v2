@@ -176,13 +176,13 @@ abstract class PaypalServicesBase {
   /// - Validates the PayPal order request.
   /// - Calls `createPaypalPayment` (implemented by subclasses).
   Future<Either<PayPalErrorModel, PaypalPaymentModel>> initialize({
-    required PayPalGetApprovalUrl? getApprovalUrl,
+    required PayPalGetCheckOutUrl? getApprovalUrl,
     required PayPalOrderRequestBase? payPalOrder,
   }) async {
     // Backend-controlled checkout URL
     if (getApprovalUrl != null) {
       final checkoutUrl = await getApprovalUrl();
-      return Right(checkoutUrl);
+      return checkoutUrl;
     }
 
     // Validate credentials when executing local API calls

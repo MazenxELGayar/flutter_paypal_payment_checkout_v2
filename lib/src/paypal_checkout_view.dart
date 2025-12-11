@@ -11,6 +11,7 @@
 /// - Returning the result via callbacks
 library flutter_paypal_payment_checkout_v2;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_paypal_payment_checkout_v2/src/models/paypal_services_base.dart';
@@ -19,7 +20,7 @@ import 'package:flutter_paypal_payment_checkout_v2/src/v1/paypal_service_v1.dart
 import 'package:flutter_paypal_payment_checkout_v2/src/v2/paypal_service_v2.dart';
 
 import 'models/paypal_payment_model.dart'
-    show PayPalGetApprovalUrl, PaypalPaymentModel;
+    show PayPalGetCheckOutUrl, PaypalPaymentModel;
 
 /// Supported PayPal API versions.
 ///
@@ -81,7 +82,7 @@ class PaypalCheckoutView extends StatefulWidget {
   ///
   /// Use this when you do **not** want to expose credentials or perform
   /// PayPal API calls in the client.
-  final PayPalGetApprovalUrl? approvalUrl;
+  final PayPalGetCheckOutUrl? approvalUrl;
 
   /// Less secure and generally not recommended for production.
   ///
@@ -413,11 +414,29 @@ class _PaypalCheckoutViewState extends State<PaypalCheckoutView> {
     // If you're in the new flow where the backend will execute/capture,
     // you can just exit early when there's no token/orderId.
     if (model.accessToken == null || model.orderId == null) {
-      widget.onUserPayment(
+      final result = await widget.onUserPayment(
         null,
         model,
       );
-      return;
+      return result.fold(
+        (PayPalErrorModel error) {
+          if (kDebugMode) {
+            print(
+              "Backend flow => error: $error",
+            );
+          }
+          widget.onError(
+            error,
+          );
+        },
+        (success) {
+          if (kDebugMode) {
+            print(
+              "Backend flow => Payment Captured: $success",
+            );
+          }
+        },
+      );
     }
 
     final v2 = services as PaypalServicesV2;

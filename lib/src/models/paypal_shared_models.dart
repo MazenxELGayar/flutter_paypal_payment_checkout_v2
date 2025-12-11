@@ -1,3 +1,4 @@
+import 'package:dartz/dartz.dart';
 import 'package:flutter_paypal_payment_checkout_v2/src/models/paypal_payment_model.dart';
 
 /// Base model for all PayPal-related responses and results.
@@ -53,6 +54,11 @@ class PayPalErrorModel extends PayPalBaseModel {
     required super.key,
     required super.code,
   });
+
+  @override
+  String toString() {
+    return 'PayPalErrorModel{error: $error, message: $message, key: $key, code: $code}';
+  }
 }
 
 /// Callback type invoked when a PayPal operation fails.
@@ -113,7 +119,7 @@ const defaultCancelURL = 'paypal-sdk://cancel';
 ///
 /// - [response]: Optional PayPal response body wrapped in [PayPalSuccessPaymentModel].
 /// - [payment]: The original [PaypalPaymentModel] used for the flow.
-typedef PayPalOnSuccess = dynamic Function(
+typedef PayPalOnSuccess = Future<Either<PayPalErrorModel, dynamic>> Function(
   PayPalSuccessPaymentModel? response,
   PaypalPaymentModel payment,
 );
