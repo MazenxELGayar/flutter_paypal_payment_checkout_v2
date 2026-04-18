@@ -22,7 +22,6 @@ import 'package:flutter_paypal_payment_checkout_v2/src/v2/paypal_service_v2.dart
 import 'models/paypal_payment_model.dart'
     show PaypalPaymentModel, PaypalCheckoutConfig, PayPalApiVersion;
 
-
 /// Main checkout widget that handles the entire PayPal flow.
 ///
 /// This widget:
@@ -35,7 +34,7 @@ import 'models/paypal_payment_model.dart'
 /// - Executes/captures the payment for client-side flows.
 /// - Returns the result to [onUserPayment], [onCancel], or [onError].
 class PaypalCheckoutView extends StatefulWidget {
- final PaypalCheckoutConfig config;
+  final PaypalCheckoutConfig config;
 
   const PaypalCheckoutView({
     Key? key,
@@ -159,7 +158,8 @@ class _PaypalCheckoutViewState extends State<PaypalCheckoutView> {
           title: Text(widget.config.appBarTitle),
         ),
         body: Center(
-          child: widget.config.loadingIndicator ?? const CircularProgressIndicator(),
+          child: widget.config.loadingIndicator ??
+              const CircularProgressIndicator(),
         ),
       );
     }
