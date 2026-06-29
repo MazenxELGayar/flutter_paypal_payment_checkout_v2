@@ -6,6 +6,14 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## **2.1.2 — 2026-06-29**
+
+### Android build fix (AGP 9+)
+
+* Bumped `flutter_inappwebview` to `^6.2.0-beta.3` so the transitive `flutter_inappwebview_android` plugin uses `proguard-android-optimize.txt` instead of the deprecated `proguard-android.txt` (required by Android Gradle Plugin 9+).
+
+---
+
 ## **2.1.1 — 2025-12-12**
 
 ### 🧩 Configuration Refactor & DX Improvements
