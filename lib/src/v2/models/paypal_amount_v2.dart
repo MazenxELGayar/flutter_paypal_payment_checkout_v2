@@ -42,17 +42,11 @@ class PayPalAmountV2 {
 
   /// Converts this amount into PayPal V2 amount JSON.
   Map<String, dynamic> toJson() => {
-        "currency_code": currency,
-        "value": value.toString(),
-        "breakdown": {
-          "item_total": {
-            "currency_code": currency,
-            "value": itemTotal.toString(),
-          },
-          "tax_total": {
-            "currency_code": currency,
-            "value": taxTotal.toString(),
-          },
-        }
-      };
+    "currency_code": currency,
+    "value": value.toString(),
+    "breakdown": {
+      "item_total": {"currency_code": currency, "value": itemTotal.toString()},
+      "tax_total": {"currency_code": currency, "value": taxTotal.toString()},
+    },
+  };
 }

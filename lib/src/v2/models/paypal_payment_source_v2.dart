@@ -88,15 +88,15 @@ class PayPalPaymentSourceV2 {
   /// }
   /// ```
   Map<String, dynamic> toJson() => {
-        "paypal": {
-          "experience_context": {
-            "payment_method_preference": paymentMethodPreference.value,
-            if (landingPage != null) "landing_page": landingPage!.value,
-            "shipping_preference": shippingPreference.value,
-            if (userAction != null) "user_action": userAction!.value,
-            "return_url": returnUrl,
-            "cancel_url": cancelUrl,
-          },
-        }
-      };
+    "paypal": {
+      "experience_context": {
+        "payment_method_preference": paymentMethodPreference.value,
+        if (landingPage != null) "landing_page": landingPage!.value,
+        "shipping_preference": shippingPreference.value,
+        if (userAction != null) "user_action": userAction!.value,
+        "return_url": returnUrl,
+        "cancel_url": cancelUrl,
+      },
+    },
+  };
 }

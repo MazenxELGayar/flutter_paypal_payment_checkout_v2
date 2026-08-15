@@ -6,6 +6,16 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## **2.1.3 — 2026-08-15**
+
+### Extra error payload (`data`)
+
+* Added optional `Map<String, dynamic>? data` on **`PayPalErrorModel`** so apps can pass through backend JSON (e.g. `{ duration, limit, window_ms }` for localized `{until}` copy) without stuffing it into `error` or `message`.
+* Dio failures from `payPalSafeApiCall` now also fill `data` when the response body is a map.
+* Helper: `PayPalErrorModel.tryData(dynamic)` always returns a map — objects are copied, any other value is wrapped as `{ data: value }`. Existing constructors stay valid (`data` is optional).
+
+---
+
 ## **2.1.2 — 2026-06-29**
 
 ### Android build fix (AGP 9+)

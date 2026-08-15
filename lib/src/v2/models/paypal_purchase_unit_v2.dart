@@ -46,9 +46,9 @@ class PayPalPurchaseUnitV2 {
 
   /// Converts this purchase unit to PayPal V2 JSON.
   Map<String, dynamic> toJson() => {
-        if (invoiceId != null) "invoice_id": invoiceId,
-        "amount": amount.toJson(),
-        "items": items.map((e) => e.toJson()).toList(),
-        if (shippingAddress != null) "shipping": shippingAddress!.toJson(),
-      };
+    if (invoiceId != null) "invoice_id": invoiceId,
+    "amount": amount.toJson(),
+    "items": items.map((e) => e.toJson()).toList(),
+    if (shippingAddress != null) "shipping": shippingAddress!.toJson(),
+  };
 }

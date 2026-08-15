@@ -60,7 +60,7 @@ Flutter code can always be decompiled.
 
 ```yaml
 dependencies:
-  flutter_paypal_payment_checkout_v2: ^2.1.1
+  flutter_paypal_payment_checkout_v2: ^2.1.3
 ```
 
 ```bash
@@ -299,7 +299,7 @@ This package includes strongly-typed models for:
 ### ✔ Core Models
 
 * `PaypalPaymentModel`
-* `PayPalErrorModel`
+* `PayPalErrorModel` — optional `data` map for extra backend/API JSON (e.g. rate-limit `duration`)
 * `PayPalSuccessPaymentModel`
 
 ---

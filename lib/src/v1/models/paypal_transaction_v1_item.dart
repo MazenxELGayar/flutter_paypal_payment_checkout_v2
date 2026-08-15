@@ -66,12 +66,12 @@ class PaypalTransactionV1Item {
   ///
   /// PayPal V1 requires `price` and `tax` as **strings**.
   Map<String, dynamic> toJson() => {
-        "name": name,
-        "description": description,
-        "quantity": quantity,
-        "price": price.toString(),
-        "tax": tax.toString(),
-        "sku": sku,
-        "currency": currency,
-      };
+    "name": name,
+    "description": description,
+    "quantity": quantity,
+    "price": price.toString(),
+    "tax": tax.toString(),
+    "sku": sku,
+    "currency": currency,
+  };
 }

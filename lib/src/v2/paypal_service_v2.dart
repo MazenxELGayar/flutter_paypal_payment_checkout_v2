@@ -36,12 +36,12 @@ class PaypalServicesV2 extends PaypalServicesBase {
     required PayPalGetAccessToken? getAccessTokenFunction,
     bool overrideInsecureClientCredentials = false,
   }) : super(
-          clientId: clientId,
-          secretKey: secretKey,
-          sandboxMode: sandboxMode,
-          getAccessTokenFunction: getAccessTokenFunction,
-          overrideInsecureClientCredentials: overrideInsecureClientCredentials,
-        );
+         clientId: clientId,
+         secretKey: secretKey,
+         sandboxMode: sandboxMode,
+         getAccessTokenFunction: getAccessTokenFunction,
+         overrideInsecureClientCredentials: overrideInsecureClientCredentials,
+       );
 
   /// Creates a PayPal **Orders V2** checkout order.
   ///
@@ -90,58 +90,55 @@ class PaypalServicesV2 extends PaypalServicesBase {
       unknownErrorMessage: "Failed to create order",
     );
 
-    return result.fold(
-      (error) => Left(error),
-      (response) {
-        final body = response.data;
+    return result.fold((error) => Left(error), (response) {
+      final body = response.data;
 
-        // Links is a List<dynamic>, each is Map<String, dynamic>
-        final List<dynamic> linksRaw = body['links'] ?? [];
-        Map<String, dynamic>? approvalLink;
+      // Links is a List<dynamic>, each is Map<String, dynamic>
+      final List<dynamic> linksRaw = body['links'] ?? [];
+      Map<String, dynamic>? approvalLink;
 
-        for (final raw in linksRaw) {
-          final link = raw as Map<String, dynamic>;
-          final rel = link['rel'] as String?;
-          if (rel == 'approve' || rel == 'payer-action') {
-            approvalLink = link;
-            break;
-          }
+      for (final raw in linksRaw) {
+        final link = raw as Map<String, dynamic>;
+        final rel = link['rel'] as String?;
+        if (rel == 'approve' || rel == 'payer-action') {
+          approvalLink = link;
+          break;
         }
+      }
 
-        final href = approvalLink?['href'] as String?;
+      final href = approvalLink?['href'] as String?;
 
-        if (href == null || href.isEmpty) {
-          return Left(
-            PayPalErrorModel(
-              error: body,
-              message:
-                  "Missing approval link (no 'approve' or 'payer-action' link found)",
-              key: "ORDER_CREATE_NO_APPROVE_LINK",
-              code: response.statusCode ?? 500,
-            ),
-          );
-        }
-
-        final orderId = body['id'] as String?;
-        final status = body['status'] as String?;
-
-        return Right(
-          PaypalPaymentModel(
-            orderId: orderId,
-            approvalUrl: href,
-            message: "Order created successfully",
-            key: "ORDER_CREATE_SUCCESS",
-            accessToken: accessToken,
-            code: response.statusCode ?? 200,
-            status: status,
-            executeUrl: null,
-            // Comes from the V2 payment source experience context
-            returnURL: payPalOrder.paymentSource.returnUrl,
-            cancelURL: payPalOrder.paymentSource.cancelUrl,
+      if (href == null || href.isEmpty) {
+        return Left(
+          PayPalErrorModel(
+            error: body,
+            message:
+                "Missing approval link (no 'approve' or 'payer-action' link found)",
+            key: "ORDER_CREATE_NO_APPROVE_LINK",
+            code: response.statusCode ?? 500,
           ),
         );
-      },
-    );
+      }
+
+      final orderId = body['id'] as String?;
+      final status = body['status'] as String?;
+
+      return Right(
+        PaypalPaymentModel(
+          orderId: orderId,
+          approvalUrl: href,
+          message: "Order created successfully",
+          key: "ORDER_CREATE_SUCCESS",
+          accessToken: accessToken,
+          code: response.statusCode ?? 200,
+          status: status,
+          executeUrl: null,
+          // Comes from the V2 payment source experience context
+          returnURL: payPalOrder.paymentSource.returnUrl,
+          cancelURL: payPalOrder.paymentSource.cancelUrl,
+        ),
+      );
+    });
   }
 
   /// Captures an existing **Orders V2** order.
@@ -179,18 +176,15 @@ class PaypalServicesV2 extends PaypalServicesBase {
       unknownErrorMessage: "Failed to capture order",
     );
 
-    return result.fold(
-      (error) => Left(error),
-      (response) {
-        return Right(
-          PayPalSuccessPaymentModel(
-            code: response.statusCode ?? 200,
-            key: "ORDER_CAPTURE_SUCCESS",
-            message: "Order captured successfully",
-            data: response.data,
-          ),
-        );
-      },
-    );
+    return result.fold((error) => Left(error), (response) {
+      return Right(
+        PayPalSuccessPaymentModel(
+          code: response.statusCode ?? 200,
+          key: "ORDER_CAPTURE_SUCCESS",
+          message: "Order captured successfully",
+          data: response.data,
+        ),
+      );
+    });
   }
 }

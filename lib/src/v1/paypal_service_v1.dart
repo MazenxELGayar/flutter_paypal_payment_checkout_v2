@@ -36,12 +36,12 @@ class PaypalServicesV1 extends PaypalServicesBase {
     required PayPalGetAccessToken? getAccessTokenFunction,
     bool overrideInsecureClientCredentials = false,
   }) : super(
-          clientId: clientId,
-          secretKey: secretKey,
-          sandboxMode: sandboxMode,
-          getAccessTokenFunction: getAccessTokenFunction,
-          overrideInsecureClientCredentials: overrideInsecureClientCredentials,
-        );
+         clientId: clientId,
+         secretKey: secretKey,
+         sandboxMode: sandboxMode,
+         getAccessTokenFunction: getAccessTokenFunction,
+         overrideInsecureClientCredentials: overrideInsecureClientCredentials,
+       );
 
   /// Creates a PayPal **V1 payment** using:
   /// `POST /v1/payments/payment`
@@ -82,111 +82,108 @@ class PaypalServicesV1 extends PaypalServicesBase {
       unknownErrorMessage: "Unexpected error while creating payment.",
     );
 
-    return result.fold(
-      (error) => Left(error),
-      (response) {
-        final body = response.data;
+    return result.fold((error) => Left(error), (response) {
+      final body = response.data;
 
-        if (body["links"] != null && body["links"].length > 0) {
-          final List links = body["links"];
+      if (body["links"] != null && body["links"].length > 0) {
+        final List links = body["links"];
 
-          String executeUrl = "";
-          String approvalUrl = "";
+        String executeUrl = "";
+        String approvalUrl = "";
 
-          // Extract approval_url link
-          final approvalItem = links.firstWhere(
-            (o) => o["rel"] == "approval_url",
-            orElse: () => null,
-          );
-          if (approvalItem != null) {
-            approvalUrl = approvalItem["href"];
-          }
+        // Extract approval_url link
+        final approvalItem = links.firstWhere(
+          (o) => o["rel"] == "approval_url",
+          orElse: () => null,
+        );
+        if (approvalItem != null) {
+          approvalUrl = approvalItem["href"];
+        }
 
-          // Extract execute link
-          final executeItem = links.firstWhere(
-            (o) => o["rel"] == "execute",
-            orElse: () => null,
-          );
-          if (executeItem != null) {
-            executeUrl = executeItem["href"];
-          }
+        // Extract execute link
+        final executeItem = links.firstWhere(
+          (o) => o["rel"] == "execute",
+          orElse: () => null,
+        );
+        if (executeItem != null) {
+          executeUrl = executeItem["href"];
+        }
 
-          /// Check PayPal response links
-          if (approvalUrl.isEmpty) {
-            return Left(
-              PayPalErrorModel(
-                error: body,
-                message:
-                    "Missing approval link: PayPal did not return `approval_url`.",
-                key: "MISSING_APPROVAL_URL",
-                code: 500,
-              ),
-            );
-          }
-
-          if (executeUrl.isEmpty) {
-            return Left(
-              PayPalErrorModel(
-                error: body,
-                message:
-                    "Missing execute link: PayPal did not return `execute` URL.",
-                key: "MISSING_EXECUTE_URL",
-                code: 500,
-              ),
-            );
-          }
-
-          /// Check your local order model (returnUrl & cancelUrl)
-          if (payPalOrder.returnUrl.isEmpty) {
-            return Left(
-              PayPalErrorModel(
-                error: body,
-                message: "Missing returnUrl in PayPalOrderRequestV1.",
-                key: "MISSING_RETURN_URL",
-                code: 400,
-              ),
-            );
-          }
-
-          if (payPalOrder.cancelUrl.isEmpty) {
-            return Left(
-              PayPalErrorModel(
-                error: body,
-                message: "Missing cancelUrl in PayPalOrderRequestV1.",
-                key: "MISSING_CANCEL_URL",
-                code: 400,
-              ),
-            );
-          }
-
-          final orderId = body['id'] as String?;
-
-          return Right(
-            PaypalPaymentModel(
-              approvalUrl: approvalUrl,
-              executeUrl: executeUrl,
-              returnURL: payPalOrder.returnUrl,
-              cancelURL: payPalOrder.cancelUrl,
-              message: "Payment created successfully.",
-              key: "PAYMENT_CREATE_SUCCESS",
-              code: 200,
-              accessToken: accessToken,
-              status: 'created',
-              orderId: orderId,
+        /// Check PayPal response links
+        if (approvalUrl.isEmpty) {
+          return Left(
+            PayPalErrorModel(
+              error: body,
+              message:
+                  "Missing approval link: PayPal did not return `approval_url`.",
+              key: "MISSING_APPROVAL_URL",
+              code: 500,
             ),
           );
         }
 
-        return Left(
-          PayPalErrorModel(
-            error: body,
-            message: "Invalid PayPal response: no links.",
-            key: "PAYMENT_NO_LINKS",
-            code: 500,
+        if (executeUrl.isEmpty) {
+          return Left(
+            PayPalErrorModel(
+              error: body,
+              message:
+                  "Missing execute link: PayPal did not return `execute` URL.",
+              key: "MISSING_EXECUTE_URL",
+              code: 500,
+            ),
+          );
+        }
+
+        /// Check your local order model (returnUrl & cancelUrl)
+        if (payPalOrder.returnUrl.isEmpty) {
+          return Left(
+            PayPalErrorModel(
+              error: body,
+              message: "Missing returnUrl in PayPalOrderRequestV1.",
+              key: "MISSING_RETURN_URL",
+              code: 400,
+            ),
+          );
+        }
+
+        if (payPalOrder.cancelUrl.isEmpty) {
+          return Left(
+            PayPalErrorModel(
+              error: body,
+              message: "Missing cancelUrl in PayPalOrderRequestV1.",
+              key: "MISSING_CANCEL_URL",
+              code: 400,
+            ),
+          );
+        }
+
+        final orderId = body['id'] as String?;
+
+        return Right(
+          PaypalPaymentModel(
+            approvalUrl: approvalUrl,
+            executeUrl: executeUrl,
+            returnURL: payPalOrder.returnUrl,
+            cancelURL: payPalOrder.cancelUrl,
+            message: "Payment created successfully.",
+            key: "PAYMENT_CREATE_SUCCESS",
+            code: 200,
+            accessToken: accessToken,
+            status: 'created',
+            orderId: orderId,
           ),
         );
-      },
-    );
+      }
+
+      return Left(
+        PayPalErrorModel(
+          error: body,
+          message: "Invalid PayPal response: no links.",
+          key: "PAYMENT_NO_LINKS",
+          code: 500,
+        ),
+      );
+    });
   }
 
   /// Executes a previously created PayPal **V1 payment**.
@@ -227,20 +224,17 @@ class PaypalServicesV1 extends PaypalServicesBase {
       unknownErrorMessage: "Unexpected error while executing payment.",
     );
 
-    return result.fold(
-      (error) => Left(error),
-      (response) {
-        final body = response.data;
+    return result.fold((error) => Left(error), (response) {
+      final body = response.data;
 
-        return Right(
-          PayPalSuccessPaymentModel(
-            data: body,
-            message: "Success",
-            key: "PAYMENT_EXECUTE_SUCCESS",
-            code: 200,
-          ),
-        );
-      },
-    );
+      return Right(
+        PayPalSuccessPaymentModel(
+          data: body,
+          message: "Success",
+          key: "PAYMENT_EXECUTE_SUCCESS",
+          code: 200,
+        ),
+      );
+    });
   }
 }

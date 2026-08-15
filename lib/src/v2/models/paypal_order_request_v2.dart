@@ -69,10 +69,10 @@ class PayPalOrderRequestV2 extends PayPalOrderRequestBase {
   /// ```
   @override
   Map<String, dynamic> toJson() => {
-        "intent": intent.value,
-        "payment_source": paymentSource.toJson(),
-        "purchase_units": purchaseUnits.map((e) => e.toJson()).toList(),
-      };
+    "intent": intent.value,
+    "payment_source": paymentSource.toJson(),
+    "purchase_units": purchaseUnits.map((e) => e.toJson()).toList(),
+  };
 
   /// Whether the order has no purchase units.
   @override

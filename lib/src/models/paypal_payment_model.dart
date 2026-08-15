@@ -5,8 +5,8 @@ import 'package:flutter_paypal_payment_checkout_v2/flutter_paypal_payment_checko
 ///
 /// This typedef is used by services that request an approval URL from PayPal
 /// during the order creation or payment setup flow.
-typedef PayPalGetCheckOutUrl
-    = Future<Either<PayPalErrorModel, PaypalPaymentModel>> Function();
+typedef PayPalGetCheckOutUrl =
+    Future<Either<PayPalErrorModel, PaypalPaymentModel>> Function();
 
 /// Represents all essential PayPal payment details required by the client
 /// to proceed with the approval, capture, or final execution flow.

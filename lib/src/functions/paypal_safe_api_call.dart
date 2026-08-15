@@ -36,6 +36,7 @@ Future<Either<PayPalErrorModel, Response>> payPalSafeApiCall(
     return Left(
       PayPalErrorModel(
         error: e.response?.data ?? e.toString(),
+        data: PayPalErrorModel.tryData(e.response?.data),
         message: networkErrorMessage,
         key: networkErrorKey,
         code: e.response?.statusCode ?? 400,
@@ -45,6 +46,7 @@ Future<Either<PayPalErrorModel, Response>> payPalSafeApiCall(
     return Left(
       PayPalErrorModel(
         error: e.toString(),
+        data: PayPalErrorModel.tryData(e.toString()),
         message: unknownErrorMessage,
         key: unknownErrorKey,
         code: 500,

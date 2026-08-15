@@ -80,15 +80,10 @@ class PayPalOrderRequestV1 extends PayPalOrderRequestBase {
   Map<String, dynamic> toJson() {
     return {
       "intent": intent.value,
-      "payer": {
-        "payment_method": paymentMethod,
-      },
+      "payer": {"payment_method": paymentMethod},
       "transactions": transactions.map((t) => t.toJson()).toList(),
       if (noteToPayer != null) "note_to_payer": noteToPayer,
-      "redirect_urls": {
-        "return_url": returnUrl,
-        "cancel_url": cancelUrl,
-      },
+      "redirect_urls": {"return_url": returnUrl, "cancel_url": cancelUrl},
     };
   }
 

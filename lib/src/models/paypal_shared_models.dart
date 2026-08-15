@@ -44,20 +44,45 @@ class PayPalAccessTokenModel extends PayPalBaseModel {
 ///
 /// Wraps the original [error] payload (string, map, etc.), along with
 /// standardized [message], [key], and [code] from [PayPalBaseModel].
+///
+/// Pass [data] for extra backend / API JSON (e.g. rate-limit `duration`).
 class PayPalErrorModel extends PayPalBaseModel {
   /// The raw error payload (can be string, JSON map, etc.).
   final dynamic error;
 
+  /// Extra JSON from the backend or PayPal API.
+  ///
+  /// Example: `{ status, key, data: { duration, limit, window_ms } }`.
+  /// Optional — omitting it is backward compatible.
+  final Map<String, dynamic>? data;
+
   PayPalErrorModel({
     required this.error,
+    this.data,
     required super.message,
     required super.key,
     required super.code,
   });
 
+  /// Always returns a map. A JSON object is copied; any other value is
+  /// wrapped as `{ 'data': value }` (including `null` / strings / lists).
+  static Map<String, dynamic> tryData(dynamic value) {
+    try {
+      if (value is Map<String, dynamic>) {
+        return Map<String, dynamic>.from(value);
+      }
+      if (value is Map) {
+        return value.map((key, v) => MapEntry(key.toString(), v));
+      }
+    } catch (_) {
+      return <String, dynamic>{'data': value};
+    }
+    return <String, dynamic>{'data': value};
+  }
+
   @override
   String toString() {
-    return 'PayPalErrorModel{error: $error, message: $message, key: $key, code: $code}';
+    return 'PayPalErrorModel{error: $error, data: $data, message: $message, key: $key, code: $code}';
   }
 }
 
@@ -119,10 +144,11 @@ const defaultCancelURL = 'paypal-sdk://cancel';
 ///
 /// - [response]: Optional PayPal response body wrapped in [PayPalSuccessPaymentModel].
 /// - [payment]: The original [PaypalPaymentModel] used for the flow.
-typedef PayPalOnSuccess = Future<Either<PayPalErrorModel, dynamic>> Function(
-  PayPalSuccessPaymentModel? response,
-  PaypalPaymentModel payment,
-);
+typedef PayPalOnSuccess =
+    Future<Either<PayPalErrorModel, dynamic>> Function(
+      PayPalSuccessPaymentModel? response,
+      PaypalPaymentModel payment,
+    );
 
 /// Model representing a successful PayPal payment or capture.
 ///

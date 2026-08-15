@@ -36,10 +36,7 @@ import 'models/paypal_payment_model.dart'
 class PaypalCheckoutView extends StatefulWidget {
   final PaypalCheckoutConfig config;
 
-  const PaypalCheckoutView({
-    Key? key,
-    required this.config,
-  }) : super(key: key);
+  const PaypalCheckoutView({Key? key, required this.config}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _PaypalCheckoutViewState();
@@ -120,14 +117,11 @@ class _PaypalCheckoutViewState extends State<PaypalCheckoutView> {
         payPalOrder: widget.config.payPalOrder,
       );
 
-      result.fold(
-        (error) => widget.config.onError(error),
-        (paymentModel) {
-          setState(() {
-            this.paymentModel = paymentModel;
-          });
-        },
-      );
+      result.fold((error) => widget.config.onError(error), (paymentModel) {
+        setState(() {
+          this.paymentModel = paymentModel;
+        });
+      });
     } catch (e) {
       widget.config.onError(
         PayPalErrorModel(
@@ -158,7 +152,8 @@ class _PaypalCheckoutViewState extends State<PaypalCheckoutView> {
           title: Text(widget.config.appBarTitle),
         ),
         body: Center(
-          child: widget.config.loadingIndicator ??
+          child:
+              widget.config.loadingIndicator ??
               const CircularProgressIndicator(),
         ),
       );
@@ -253,10 +248,7 @@ class _PaypalCheckoutViewState extends State<PaypalCheckoutView> {
     // you can just exit early when there's no token/executeUrl.
     if (model.accessToken == null || model.executeUrl == null) {
       // backend will call execute/capture – nothing to do on client
-      widget.config.onUserPayment(
-        null,
-        model,
-      );
+      widget.config.onUserPayment(null, model);
       return;
     }
 
@@ -283,15 +275,9 @@ class _PaypalCheckoutViewState extends State<PaypalCheckoutView> {
       model.accessToken!,
     );
 
-    result.fold(
-      (error) => widget.config.onError(error),
-      (success) {
-        widget.config.onUserPayment(
-          success,
-          model,
-        );
-      },
-    );
+    result.fold((error) => widget.config.onError(error), (success) {
+      widget.config.onUserPayment(success, model);
+    });
   }
 
   /// Captures a V2 order after the user returns from PayPal.
@@ -310,26 +296,17 @@ class _PaypalCheckoutViewState extends State<PaypalCheckoutView> {
     // If you're in the new flow where the backend will execute/capture,
     // you can just exit early when there's no token/orderId.
     if (model.accessToken == null || model.orderId == null) {
-      final result = await widget.config.onUserPayment(
-        null,
-        model,
-      );
+      final result = await widget.config.onUserPayment(null, model);
       return result.fold(
         (PayPalErrorModel error) {
           if (kDebugMode) {
-            print(
-              "Backend flow => error: $error",
-            );
+            print("Backend flow => error: $error");
           }
-          widget.config.onError(
-            error,
-          );
+          widget.config.onError(error);
         },
         (success) {
           if (kDebugMode) {
-            print(
-              "Backend flow => Payment Captured: $success",
-            );
+            print("Backend flow => Payment Captured: $success");
           }
         },
       );
@@ -337,19 +314,10 @@ class _PaypalCheckoutViewState extends State<PaypalCheckoutView> {
 
     final v2 = services as PaypalServicesV2;
 
-    final result = await v2.captureOrder(
-      model.orderId!,
-      model.accessToken!,
-    );
+    final result = await v2.captureOrder(model.orderId!, model.accessToken!);
 
-    result.fold(
-      (error) => widget.config.onError(error),
-      (success) {
-        widget.config.onUserPayment(
-          success,
-          model,
-        );
-      },
-    );
+    result.fold((error) => widget.config.onError(error), (success) {
+      widget.config.onUserPayment(success, model);
+    });
   }
 }

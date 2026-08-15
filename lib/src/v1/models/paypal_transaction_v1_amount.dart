@@ -59,13 +59,13 @@ class PaypalTransactionV1Amount {
   ///
   /// All numeric fields are converted to strings.
   Map<String, dynamic> toJson() => {
-        "total": total.toString(),
-        "currency": currency,
-        "subtotal": subTotal.toString(),
-        "tax": tax.toString(),
-        "shipping": shipping.toString(),
-        "handling_fee": handlingFee.toString(),
-        "shipping_discount": shippingDiscount.toString(),
-        "insurance": insurance.toString(),
-      };
+    "total": total.toString(),
+    "currency": currency,
+    "subtotal": subTotal.toString(),
+    "tax": tax.toString(),
+    "shipping": shipping.toString(),
+    "handling_fee": handlingFee.toString(),
+    "shipping_discount": shippingDiscount.toString(),
+    "insurance": insurance.toString(),
+  };
 }

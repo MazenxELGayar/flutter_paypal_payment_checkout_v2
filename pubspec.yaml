@@ -1,6 +1,6 @@
 name: flutter_paypal_payment_checkout_v2
 description: A powerful, secure PayPal checkout wrapper for Flutter.
-version: 2.1.2
+version: 2.1.3
 homepage: https://github.com/MazenxELGayar/flutter_paypal_payment_checkout_v2
 
 platforms:

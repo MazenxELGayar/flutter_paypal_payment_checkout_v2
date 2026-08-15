@@ -61,7 +61,8 @@ abstract class PaypalServicesBase {
   ///
   /// This protects developers from shipping PayPal client secrets inside apps.
   PayPalErrorModel? validateInlineCredentials() {
-    final hasInlineCredentials = (clientId != null && clientId!.isNotEmpty) ||
+    final hasInlineCredentials =
+        (clientId != null && clientId!.isNotEmpty) ||
         (secretKey != null && secretKey!.isNotEmpty);
 
     if (!sandboxMode &&
@@ -99,7 +100,7 @@ abstract class PaypalServicesBase {
   /// - `Right(PayPalAccessTokenModel)` on success.
   /// - `Left(PayPalErrorModel)` on any failure.
   Future<Either<PayPalErrorModel, PayPalAccessTokenModel>>
-      getAccessToken() async {
+  getAccessToken() async {
     // Backend-provided access token (secure)
     if (getAccessTokenFunction != null) {
       try {
@@ -125,9 +126,7 @@ abstract class PaypalServicesBase {
     }
 
     // Local OAuth flow (sandbox/testing only)
-    final authToken = base64.encode(
-      utf8.encode("$clientId:$secretKey"),
-    );
+    final authToken = base64.encode(utf8.encode("$clientId:$secretKey"));
 
     final result = await payPalSafeApiCall(
       () => Dio().post(
@@ -145,21 +144,18 @@ abstract class PaypalServicesBase {
       unknownErrorMessage: "Unable to proceed, check your internet connection.",
     );
 
-    return result.fold(
-      (error) => Left(error),
-      (response) {
-        final token = response.data["access_token"];
+    return result.fold((error) => Left(error), (response) {
+      final token = response.data["access_token"];
 
-        return Right(
-          PayPalAccessTokenModel(
-            accessToken: token,
-            message: "Success",
-            key: "ACCESS_TOKEN_SUCCESS",
-            code: 200,
-          ),
-        );
-      },
-    );
+      return Right(
+        PayPalAccessTokenModel(
+          accessToken: token,
+          message: "Success",
+          key: "ACCESS_TOKEN_SUCCESS",
+          code: 200,
+        ),
+      );
+    });
   }
 
   /// Shared initialization logic used before creating a PayPal order.
@@ -193,49 +189,49 @@ abstract class PaypalServicesBase {
 
     // Fetch access token
     final tokenResponse = await getAccessToken();
-    return await tokenResponse.fold(
-      (failure) => Left(failure),
-      (accessTokenModel) async {
-        // Order must be provided
-        if (payPalOrder == null) {
-          return Left(
-            PayPalErrorModel(
-              error: "PayPal order cannot be null.",
-              message: "PayPal order cannot be null.",
-              key: "NULL_ORDER",
-              code: 400,
-            ),
-          );
-        }
-
-        // Validate order content
-        if (payPalOrder.isEmpty) {
-          final label = payPalOrder.isV1 ? "Transactions" : "Purchase Units";
-          final key =
-              payPalOrder.isV1 ? "EMPTY_TRANSACTIONS" : "EMPTY_PURCHASE_UNITS";
-
-          return Left(
-            PayPalErrorModel(
-              error: "$label cannot be empty.",
-              message: "$label cannot be empty.",
-              key: key,
-              code: 400,
-            ),
-          );
-        }
-
-        // Create payment/order via subclass implementation
-        final createPaypalPaymentResponse = await createPaypalPayment(
-          payPalOrder: payPalOrder,
-          accessToken: accessTokenModel.accessToken,
+    return await tokenResponse.fold((failure) => Left(failure), (
+      accessTokenModel,
+    ) async {
+      // Order must be provided
+      if (payPalOrder == null) {
+        return Left(
+          PayPalErrorModel(
+            error: "PayPal order cannot be null.",
+            message: "PayPal order cannot be null.",
+            key: "NULL_ORDER",
+            code: 400,
+          ),
         );
+      }
 
-        return createPaypalPaymentResponse.fold(
-          (failure) => Left(failure),
-          (paymentModel) => Right(paymentModel),
+      // Validate order content
+      if (payPalOrder.isEmpty) {
+        final label = payPalOrder.isV1 ? "Transactions" : "Purchase Units";
+        final key = payPalOrder.isV1
+            ? "EMPTY_TRANSACTIONS"
+            : "EMPTY_PURCHASE_UNITS";
+
+        return Left(
+          PayPalErrorModel(
+            error: "$label cannot be empty.",
+            message: "$label cannot be empty.",
+            key: key,
+            code: 400,
+          ),
         );
-      },
-    );
+      }
+
+      // Create payment/order via subclass implementation
+      final createPaypalPaymentResponse = await createPaypalPayment(
+        payPalOrder: payPalOrder,
+        accessToken: accessTokenModel.accessToken,
+      );
+
+      return createPaypalPaymentResponse.fold(
+        (failure) => Left(failure),
+        (paymentModel) => Right(paymentModel),
+      );
+    });
   }
 
   /// Must be overridden by V1/V2 service implementations.
