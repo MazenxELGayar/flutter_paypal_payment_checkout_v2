@@ -133,12 +133,65 @@ abstract class PayPalOrderRequestBase {
 /// Default deep link return URL used when the PayPal payment succeeds.
 ///
 /// This is the URL PayPal redirects to after a successful approval.
+///
+/// Used on **mobile/desktop** in-app webviews. On **web**, use HTTPS URLs on
+/// your domain instead — see [webDefaultReturnUrl] and [webDefaultCancelUrl].
 const defaultReturnURL = 'paypal-sdk://success';
 
 /// Default deep link cancel URL used when the PayPal payment is cancelled.
 ///
 /// This is the URL PayPal redirects to when the user cancels the checkout.
+///
+/// Used on **mobile/desktop** in-app webviews. On **web**, use HTTPS URLs on
+/// your domain instead — see [webDefaultReturnUrl] and [webDefaultCancelUrl].
 const defaultCancelURL = 'paypal-sdk://cancel';
+
+/// Query parameter used by [webDefaultReturnUrl] / [webDefaultCancelUrl].
+const webReturnQueryParam = 'paypal_return';
+
+/// Value of [webReturnQueryParam] when PayPal redirects after approval.
+const webReturnSuccessValue = 'success';
+
+/// Value of [webReturnQueryParam] when the buyer cancels checkout.
+const webReturnCancelValue = 'cancel';
+
+/// `sessionStorage` key used by [PaypalCheckoutView] on web to persist checkout
+/// state across the full-page PayPal redirect.
+const paypalWebSessionStorageKey = 'flutter_paypal_checkout_v2_state';
+
+/// Builds the default **web** return URL for the current page (or [base]).
+///
+/// PayPal must redirect to an HTTPS URL on your domain. Pass the result as
+/// `returnUrl` in [PayPalPaymentSourceV2] or [PayPalOrderRequestV1], or ensure
+/// your backend sets the same URL when creating the order.
+///
+/// Example: `https://app.example.com/checkout?paypal_return=success`
+String webDefaultReturnUrl([Uri? base]) {
+  final uri = base ?? Uri.base;
+  return uri
+      .replace(
+        queryParameters: {
+          ...uri.queryParameters,
+          webReturnQueryParam: webReturnSuccessValue,
+        },
+      )
+      .toString();
+}
+
+/// Builds the default **web** cancel URL for the current page (or [base]).
+///
+/// See [webDefaultReturnUrl] for usage notes.
+String webDefaultCancelUrl([Uri? base]) {
+  final uri = base ?? Uri.base;
+  return uri
+      .replace(
+        queryParameters: {
+          ...uri.queryParameters,
+          webReturnQueryParam: webReturnCancelValue,
+        },
+      )
+      .toString();
+}
 
 /// Callback type invoked when a PayPal payment completes successfully.
 ///

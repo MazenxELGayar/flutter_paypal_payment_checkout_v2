@@ -2,9 +2,33 @@ import 'dart:convert';
 
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_paypal_payment_checkout_v2/src/functions/paypal_safe_api_call.dart';
 import 'package:flutter_paypal_payment_checkout_v2/src/models/paypal_payment_model.dart';
 import 'package:flutter_paypal_payment_checkout_v2/src/models/paypal_shared_models.dart';
+
+/// Returns an error when direct PayPal REST calls are attempted from web.
+///
+/// Browser CORS blocks OAuth, order creation, execute, and capture from the
+/// client. On web, provide [PayPalGetCheckOutUrl] (`approvalUrl`) from your
+/// backend and handle execute/capture server-side after redirect.
+PayPalErrorModel? validateWebDirectApiCall() {
+  if (kIsWeb) {
+    return PayPalErrorModel(
+      error: "WEB_DIRECT_API_NOT_SUPPORTED",
+      message:
+          "Direct PayPal REST API calls from the browser are not supported "
+          "(CORS).\n\n"
+          "On web, use `approvalUrl` from your backend and let the server "
+          "execute/capture after redirect.\n"
+          "Set `returnUrl` / `cancelUrl` to HTTPS URLs on your domain — "
+          "see webDefaultReturnUrl() and webDefaultCancelUrl().",
+      key: "WEB_DIRECT_API_NOT_SUPPORTED",
+      code: 400,
+    );
+  }
+  return null;
+}
 
 /// Base class for all PayPal service implementations (V1 or V2).
 ///
@@ -125,6 +149,11 @@ abstract class PaypalServicesBase {
       }
     }
 
+    final webApiError = validateWebDirectApiCall();
+    if (webApiError != null) {
+      return Left(webApiError);
+    }
+
     // Local OAuth flow (sandbox/testing only)
     final authToken = base64.encode(utf8.encode("$clientId:$secretKey"));
 
@@ -179,6 +208,11 @@ abstract class PaypalServicesBase {
     if (getApprovalUrl != null) {
       final checkoutUrl = await getApprovalUrl();
       return checkoutUrl;
+    }
+
+    final webApiError = validateWebDirectApiCall();
+    if (webApiError != null) {
+      return Left(webApiError);
     }
 
     // Validate credentials when executing local API calls
