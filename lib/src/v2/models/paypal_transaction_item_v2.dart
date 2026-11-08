@@ -53,6 +53,7 @@ class PaypalTransactionV2Item {
   /// Optional barcode type ("UPC-A", "UPC-E", etc.).
   final String? upcType;
 
+  /// Creates a V2 item.
   PaypalTransactionV2Item({
     required this.name,
     required this.description,
@@ -69,14 +70,18 @@ class PaypalTransactionV2Item {
 
   /// Converts this item to PayPal V2 JSON.
   Map<String, dynamic> toJson() => {
-    "name": name,
-    "description": description,
-    "unit_amount": {"currency_code": currency, "value": unitAmount.toString()},
-    "quantity": quantity.toString(),
-    "category": category.value,
-    "sku": sku,
-    if (imageUrl != null) "image_url": imageUrl,
-    if (url != null) "url": url,
-    if (upcCode != null) "upc": {"type": upcType ?? "UPC-A", "code": upcCode},
-  };
+        "name": name,
+        "description": description,
+        "unit_amount": {
+          "currency_code": currency,
+          "value": unitAmount.toString()
+        },
+        "quantity": quantity.toString(),
+        "category": category.value,
+        "sku": sku,
+        if (imageUrl != null) "image_url": imageUrl,
+        if (url != null) "url": url,
+        if (upcCode != null)
+          "upc": {"type": upcType ?? "UPC-A", "code": upcCode},
+      };
 }

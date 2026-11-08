@@ -24,8 +24,10 @@ import 'models/paypal_payment_model.dart'
 /// - Omit client [accessToken] / [orderId] on [PaypalPaymentModel] so capture
 ///   runs on your backend after redirect.
 class PaypalCheckoutView extends StatefulWidget {
+  /// Checkout settings: credentials, order, callbacks and UI options.
   final PaypalCheckoutConfig config;
 
+  /// Creates the checkout view for [config].
   const PaypalCheckoutView({Key? key, required this.config}) : super(key: key);
 
   @override
@@ -46,7 +48,8 @@ class _PaypalCheckoutViewState extends State<PaypalCheckoutView> {
 
   /// Restores state after a PayPal redirect or starts a new checkout.
   Future<void> _bootstrap() async {
-    final stored = web.window.sessionStorage.getItem(paypalWebSessionStorageKey);
+    final stored =
+        web.window.sessionStorage.getItem(paypalWebSessionStorageKey);
     if (stored != null) {
       try {
         final state = jsonDecode(stored) as Map<String, dynamic>;

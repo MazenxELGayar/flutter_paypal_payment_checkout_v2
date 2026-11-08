@@ -22,8 +22,10 @@ import 'models/paypal_payment_model.dart'
 /// - Executes/captures the payment for client-side flows.
 /// - Returns the result to [onUserPayment], [onCancel], or [onError].
 class PaypalCheckoutView extends StatefulWidget {
+  /// Checkout settings: credentials, order, callbacks and UI options.
   final PaypalCheckoutConfig config;
 
+  /// Creates the checkout view for [config].
   const PaypalCheckoutView({Key? key, required this.config}) : super(key: key);
 
   @override

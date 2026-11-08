@@ -9,7 +9,10 @@
 /// - **UNRESTRICTED**
 ///   PayPal may allow slower funding sources.
 enum PayPalPaymentMethodPreferenceV2 {
+  /// Accept only payment methods that pay immediately (`IMMEDIATE_PAYMENT_REQUIRED`).
   immediatePaymentRequired,
+
+  /// Accept any payment method the buyer has (`UNRESTRICTED`).
   unrestricted;
 
   /// Converts enum → PayPal API string.

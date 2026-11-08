@@ -29,6 +29,7 @@ import 'models/paypal_order_request_v1.dart';
 /// - Validates links and local return/cancel URLs.
 /// - Wraps results into [PaypalPaymentModel] and [PayPalSuccessPaymentModel].
 class PaypalServicesV1 extends PaypalServicesBase {
+  /// Creates the Payments API V1 service.
   PaypalServicesV1({
     required String? clientId,
     required String? secretKey,
@@ -36,12 +37,12 @@ class PaypalServicesV1 extends PaypalServicesBase {
     required PayPalGetAccessToken? getAccessTokenFunction,
     bool overrideInsecureClientCredentials = false,
   }) : super(
-         clientId: clientId,
-         secretKey: secretKey,
-         sandboxMode: sandboxMode,
-         getAccessTokenFunction: getAccessTokenFunction,
-         overrideInsecureClientCredentials: overrideInsecureClientCredentials,
-       );
+          clientId: clientId,
+          secretKey: secretKey,
+          sandboxMode: sandboxMode,
+          getAccessTokenFunction: getAccessTokenFunction,
+          overrideInsecureClientCredentials: overrideInsecureClientCredentials,
+        );
 
   /// Creates a PayPal **V1 payment** using:
   /// `POST /v1/payments/payment`

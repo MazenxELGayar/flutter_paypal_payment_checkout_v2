@@ -52,6 +52,7 @@ class PaypalTransactionV1Item {
   /// Currency for this item's price (e.g., `"USD"`).
   final String currency;
 
+  /// Creates a V1 transaction item.
   PaypalTransactionV1Item({
     required this.name,
     required this.description,
@@ -66,12 +67,12 @@ class PaypalTransactionV1Item {
   ///
   /// PayPal V1 requires `price` and `tax` as **strings**.
   Map<String, dynamic> toJson() => {
-    "name": name,
-    "description": description,
-    "quantity": quantity,
-    "price": price.toString(),
-    "tax": tax.toString(),
-    "sku": sku,
-    "currency": currency,
-  };
+        "name": name,
+        "description": description,
+        "quantity": quantity,
+        "price": price.toString(),
+        "tax": tax.toString(),
+        "sku": sku,
+        "currency": currency,
+      };
 }

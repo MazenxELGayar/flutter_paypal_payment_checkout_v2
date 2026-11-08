@@ -15,8 +15,13 @@
 ///   Use the address in your API request.
 ///   ❗ Buyer cannot change it on PayPal.
 enum PayPalShippingPreferenceV2 {
+  /// Use the shipping address saved in the buyer's PayPal account (`GET_FROM_FILE`).
   getFromFile,
+
+  /// No shipping address, e.g. digital goods (`NO_SHIPPING`).
   noShipping,
+
+  /// Use the address sent in the order; the buyer cannot change it (`SET_PROVIDED_ADDRESS`).
   setProvidedAddress;
 
   /// Converts enum → PayPal API string.

@@ -45,6 +45,7 @@ class PayPalShippingAddressV1 {
   /// State, province, or region.
   final String state;
 
+  /// Creates a V1 shipping address.
   PayPalShippingAddressV1({
     required this.recipientName,
     required this.line1,

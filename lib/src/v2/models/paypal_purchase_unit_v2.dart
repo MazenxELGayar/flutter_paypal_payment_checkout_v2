@@ -37,6 +37,7 @@ class PayPalPurchaseUnitV2 {
   /// Optional shipping address.
   final PayPalShippingAddressV2? shippingAddress;
 
+  /// Creates a V2 purchase unit.
   PayPalPurchaseUnitV2({
     this.invoiceId,
     required this.amount,
@@ -46,9 +47,9 @@ class PayPalPurchaseUnitV2 {
 
   /// Converts this purchase unit to PayPal V2 JSON.
   Map<String, dynamic> toJson() => {
-    if (invoiceId != null) "invoice_id": invoiceId,
-    "amount": amount.toJson(),
-    "items": items.map((e) => e.toJson()).toList(),
-    if (shippingAddress != null) "shipping": shippingAddress!.toJson(),
-  };
+        if (invoiceId != null) "invoice_id": invoiceId,
+        "amount": amount.toJson(),
+        "items": items.map((e) => e.toJson()).toList(),
+        if (shippingAddress != null) "shipping": shippingAddress!.toJson(),
+      };
 }

@@ -5,8 +5,8 @@ import 'package:flutter_paypal_payment_checkout_v2/flutter_paypal_payment_checko
 ///
 /// This typedef is used by services that request an approval URL from PayPal
 /// during the order creation or payment setup flow.
-typedef PayPalGetCheckOutUrl =
-    Future<Either<PayPalErrorModel, PaypalPaymentModel>> Function();
+typedef PayPalGetCheckOutUrl
+    = Future<Either<PayPalErrorModel, PaypalPaymentModel>> Function();
 
 /// Represents all essential PayPal payment details required by the client
 /// to proceed with the approval, capture, or final execution flow.
@@ -42,6 +42,7 @@ class PaypalPaymentModel extends PayPalBaseModel {
   /// Optional execute URL used in legacy PayPal execution flow (V1 only).
   final String? executeUrl;
 
+  /// Creates a [PaypalPaymentModel] from the approval URL and the return / cancel URLs PayPal redirects to.
   PaypalPaymentModel({
     required this.approvalUrl,
     required this.executeUrl,
@@ -79,8 +80,17 @@ class PaypalPaymentModel extends PayPalBaseModel {
 /// - [PayPalApiVersion.v1] → Legacy Payments API V1.
 /// - [PayPalApiVersion.v2] → Modern Orders API V2 (recommended).
 
-enum PayPalApiVersion { v1, v2 }
+/// Which PayPal REST API the checkout uses.
+enum PayPalApiVersion {
+  /// Payments API V1 (`/v1/payments/payment`), legacy.
+  v1,
 
+  /// Orders API V2 (`/v2/checkout/orders`), recommended.
+  v2,
+}
+
+/// Everything [PaypalCheckoutView] needs: the API version and credentials (or a
+/// backend-created order), the order, the callbacks and the UI options.
 class PaypalCheckoutConfig {
   /// Which PayPal API version to use.
   ///
@@ -170,6 +180,7 @@ class PaypalCheckoutConfig {
   /// ⚠️ Only set this to `true` if you **fully understand the security risk**.
   final bool overrideInsecureClientCredentials;
 
+  /// Creates the checkout configuration passed to [PaypalCheckoutView].
   const PaypalCheckoutConfig({
     required this.onUserPayment,
     required this.getAccessToken,

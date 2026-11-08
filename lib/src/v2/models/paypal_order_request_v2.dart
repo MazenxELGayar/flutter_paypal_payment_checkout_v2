@@ -51,6 +51,7 @@ class PayPalOrderRequestV2 extends PayPalOrderRequestBase {
   /// At least one purchase unit is required.
   final List<PayPalPurchaseUnitV2> purchaseUnits;
 
+  /// Creates a V2 order request.
   PayPalOrderRequestV2({
     this.intent = PayPalOrderIntentV2.capture,
     required this.paymentSource,
@@ -69,10 +70,10 @@ class PayPalOrderRequestV2 extends PayPalOrderRequestBase {
   /// ```
   @override
   Map<String, dynamic> toJson() => {
-    "intent": intent.value,
-    "payment_source": paymentSource.toJson(),
-    "purchase_units": purchaseUnits.map((e) => e.toJson()).toList(),
-  };
+        "intent": intent.value,
+        "payment_source": paymentSource.toJson(),
+        "purchase_units": purchaseUnits.map((e) => e.toJson()).toList(),
+      };
 
   /// Whether the order has no purchase units.
   @override

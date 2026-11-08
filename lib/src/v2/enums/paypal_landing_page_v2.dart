@@ -6,7 +6,10 @@
 /// - **LOGIN**          → Shows the PayPal login page.
 /// - **NO_PREFERENCE**  → Lets PayPal decide (default experience).
 enum PayPalLandingPageV2 {
+  /// Show the PayPal login page first (`LOGIN`).
   login,
+
+  /// Let PayPal choose the page (`NO_PREFERENCE`).
   noPreference;
 
   /// Converts enum → PayPal API string.

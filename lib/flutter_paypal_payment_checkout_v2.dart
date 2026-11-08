@@ -111,4 +111,17 @@ export 'src/v2/models/paypal_purchase_unit_v2.dart';
 /// ```dart
 /// return Right(value);
 /// ```
-export 'package:dartz/dartz.dart';
+export 'package:dartz/dartz.dart'
+    show
+        Either,
+        Left,
+        Right,
+        left,
+        right,
+        Unit,
+        unit,
+        Option,
+        Some,
+        None,
+        some,
+        none;

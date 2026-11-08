@@ -6,6 +6,15 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## **2.2.1 — 2026-11-09**
+
+### Documentation and exports
+
+* The package now re-exports only the `dartz` types its API uses: `Either`, `Left`, `Right`, `left`, `right`, `Unit`, `unit`, `Option`, `Some`, `None`, `some`, `none`. If you used other `dartz` APIs through this import, add `dartz` to your own `pubspec.yaml` and import it directly.
+* Every public class, constructor and enum value is documented (`public_member_api_docs` is on).
+
+---
+
 ## **2.2.0 — 2026-11-09**
 
 ### Web checkout

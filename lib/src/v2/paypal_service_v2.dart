@@ -29,6 +29,7 @@ import 'models/paypal_order_request_v2.dart';
 /// - Extracts the `approve` / `payer-action` link from the V2 response.
 /// - Wraps results into [PaypalPaymentModel] and [PayPalSuccessPaymentModel].
 class PaypalServicesV2 extends PaypalServicesBase {
+  /// Creates the Orders API V2 service.
   PaypalServicesV2({
     required String? clientId,
     required String? secretKey,
@@ -36,12 +37,12 @@ class PaypalServicesV2 extends PaypalServicesBase {
     required PayPalGetAccessToken? getAccessTokenFunction,
     bool overrideInsecureClientCredentials = false,
   }) : super(
-         clientId: clientId,
-         secretKey: secretKey,
-         sandboxMode: sandboxMode,
-         getAccessTokenFunction: getAccessTokenFunction,
-         overrideInsecureClientCredentials: overrideInsecureClientCredentials,
-       );
+          clientId: clientId,
+          secretKey: secretKey,
+          sandboxMode: sandboxMode,
+          getAccessTokenFunction: getAccessTokenFunction,
+          overrideInsecureClientCredentials: overrideInsecureClientCredentials,
+        );
 
   /// Creates a PayPal **Orders V2** checkout order.
   ///

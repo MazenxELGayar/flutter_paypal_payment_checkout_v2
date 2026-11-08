@@ -8,8 +8,13 @@
 /// - **DIGITAL_GOODS**   → Downloadable or software products.
 /// - **DONATION**        → Contributions to nonprofits or charities.
 enum PayPalItemCategoryV2 {
+  /// A physical item that is shipped (`PHYSICAL_GOODS`).
   physicalGoods,
+
+  /// A digital item, no shipping (`DIGITAL_GOODS`).
   digitalGoods,
+
+  /// A donation (`DONATION`).
   donation;
 
   /// Converts enum → PayPal API string.

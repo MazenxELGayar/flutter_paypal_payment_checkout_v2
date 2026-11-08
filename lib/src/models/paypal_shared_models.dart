@@ -17,6 +17,7 @@ class PayPalBaseModel {
   /// Numeric status or error code (e.g. 200, 400, 500).
   final int code;
 
+  /// Creates a [PayPalBaseModel].
   PayPalBaseModel({
     required this.message,
     required this.key,
@@ -32,6 +33,7 @@ class PayPalAccessTokenModel extends PayPalBaseModel {
   /// The OAuth access token to be used in PayPal API calls.
   final String accessToken;
 
+  /// Creates a [PayPalAccessTokenModel].
   PayPalAccessTokenModel({
     required this.accessToken,
     required super.message,
@@ -56,6 +58,7 @@ class PayPalErrorModel extends PayPalBaseModel {
   /// Optional — omitting it is backward compatible.
   final Map<String, dynamic>? data;
 
+  /// Creates a [PayPalErrorModel] with a message and optional details.
   PayPalErrorModel({
     required this.error,
     this.data,
@@ -108,6 +111,7 @@ typedef PayPalTransactionsFunction = Map<String, dynamic> Function();
 /// - Indicate whether they are V1 or V2 using [isV1] and [isV2].
 /// - Report if they are empty via [isEmpty]/[isNotEmpty].
 abstract class PayPalOrderRequestBase {
+  /// Const constructor for subclasses.
   const PayPalOrderRequestBase();
 
   /// Must be implemented by V1 and V2 order models.
@@ -168,14 +172,12 @@ const paypalWebSessionStorageKey = 'flutter_paypal_checkout_v2_state';
 /// Example: `https://app.example.com/checkout?paypal_return=success`
 String webDefaultReturnUrl([Uri? base]) {
   final uri = base ?? Uri.base;
-  return uri
-      .replace(
-        queryParameters: {
-          ...uri.queryParameters,
-          webReturnQueryParam: webReturnSuccessValue,
-        },
-      )
-      .toString();
+  return uri.replace(
+    queryParameters: {
+      ...uri.queryParameters,
+      webReturnQueryParam: webReturnSuccessValue,
+    },
+  ).toString();
 }
 
 /// Builds the default **web** cancel URL for the current page (or [base]).
@@ -183,25 +185,22 @@ String webDefaultReturnUrl([Uri? base]) {
 /// See [webDefaultReturnUrl] for usage notes.
 String webDefaultCancelUrl([Uri? base]) {
   final uri = base ?? Uri.base;
-  return uri
-      .replace(
-        queryParameters: {
-          ...uri.queryParameters,
-          webReturnQueryParam: webReturnCancelValue,
-        },
-      )
-      .toString();
+  return uri.replace(
+    queryParameters: {
+      ...uri.queryParameters,
+      webReturnQueryParam: webReturnCancelValue,
+    },
+  ).toString();
 }
 
 /// Callback type invoked when a PayPal payment completes successfully.
 ///
 /// - [response]: Optional PayPal response body wrapped in [PayPalSuccessPaymentModel].
 /// - [payment]: The original [PaypalPaymentModel] used for the flow.
-typedef PayPalOnSuccess =
-    Future<Either<PayPalErrorModel, dynamic>> Function(
-      PayPalSuccessPaymentModel? response,
-      PaypalPaymentModel payment,
-    );
+typedef PayPalOnSuccess = Future<Either<PayPalErrorModel, dynamic>> Function(
+  PayPalSuccessPaymentModel? response,
+  PaypalPaymentModel payment,
+);
 
 /// Model representing a successful PayPal payment or capture.
 ///
@@ -211,6 +210,7 @@ class PayPalSuccessPaymentModel extends PayPalBaseModel {
   /// Raw PayPal response body (capture, order details, etc.).
   final dynamic data;
 
+  /// Creates a [PayPalSuccessPaymentModel].
   PayPalSuccessPaymentModel({
     required this.data,
     required super.message,

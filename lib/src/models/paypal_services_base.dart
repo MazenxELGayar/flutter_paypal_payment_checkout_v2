@@ -64,6 +64,7 @@ abstract class PaypalServicesBase {
   /// When provided, `getAccessToken()` skips the local OAuth call entirely.
   final PayPalGetAccessToken? getAccessTokenFunction;
 
+  /// Creates the shared service state (credentials, sandbox mode, callbacks).
   const PaypalServicesBase({
     required this.clientId,
     required this.secretKey,
@@ -85,8 +86,7 @@ abstract class PaypalServicesBase {
   ///
   /// This protects developers from shipping PayPal client secrets inside apps.
   PayPalErrorModel? validateInlineCredentials() {
-    final hasInlineCredentials =
-        (clientId != null && clientId!.isNotEmpty) ||
+    final hasInlineCredentials = (clientId != null && clientId!.isNotEmpty) ||
         (secretKey != null && secretKey!.isNotEmpty);
 
     if (!sandboxMode &&
@@ -124,7 +124,7 @@ abstract class PaypalServicesBase {
   /// - `Right(PayPalAccessTokenModel)` on success.
   /// - `Left(PayPalErrorModel)` on any failure.
   Future<Either<PayPalErrorModel, PayPalAccessTokenModel>>
-  getAccessToken() async {
+      getAccessToken() async {
     // Backend-provided access token (secure)
     if (getAccessTokenFunction != null) {
       try {
@@ -241,9 +241,8 @@ abstract class PaypalServicesBase {
       // Validate order content
       if (payPalOrder.isEmpty) {
         final label = payPalOrder.isV1 ? "Transactions" : "Purchase Units";
-        final key = payPalOrder.isV1
-            ? "EMPTY_TRANSACTIONS"
-            : "EMPTY_PURCHASE_UNITS";
+        final key =
+            payPalOrder.isV1 ? "EMPTY_TRANSACTIONS" : "EMPTY_PURCHASE_UNITS";
 
         return Left(
           PayPalErrorModel(

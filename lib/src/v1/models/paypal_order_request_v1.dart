@@ -52,6 +52,7 @@ class PayPalOrderRequestV1 extends PayPalOrderRequestBase {
   /// Defaults to the SDK's internal deep link.
   final String cancelUrl;
 
+  /// Creates a V1 payment request.
   const PayPalOrderRequestV1({
     this.intent = PayPalOrderIntentV1.sale,
     this.paymentMethod = "paypal",

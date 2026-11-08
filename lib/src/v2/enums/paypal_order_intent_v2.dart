@@ -10,7 +10,10 @@
 ///   Places a hold on the funds. Must later use:
 ///   `POST /v2/payments/authorizations/{id}/capture`
 enum PayPalOrderIntentV2 {
+  /// Capture the payment right after approval (`CAPTURE`).
   capture,
+
+  /// Authorize now and capture later (`AUTHORIZE`).
   authorize;
 
   /// Converts enum → PayPal API string.

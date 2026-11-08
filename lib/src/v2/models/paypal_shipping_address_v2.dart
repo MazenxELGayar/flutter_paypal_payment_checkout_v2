@@ -39,6 +39,7 @@ class PayPalShippingAddressV2 {
   /// ISO country code (e.g., "US", "CA", "EG").
   final String countryCode;
 
+  /// Creates a V2 shipping address.
   PayPalShippingAddressV2({
     required this.name,
     required this.addressLine1,
@@ -51,14 +52,14 @@ class PayPalShippingAddressV2 {
 
   /// Converts this address into PayPal V2 JSON format.
   Map<String, dynamic> toJson() => {
-    "name": {"full_name": name},
-    "address": {
-      "address_line_1": addressLine1,
-      if (addressLine2 != null) "address_line_2": addressLine2,
-      "admin_area_2": city,
-      "admin_area_1": state,
-      "postal_code": postalCode,
-      "country_code": countryCode,
-    },
-  };
+        "name": {"full_name": name},
+        "address": {
+          "address_line_1": addressLine1,
+          if (addressLine2 != null) "address_line_2": addressLine2,
+          "admin_area_2": city,
+          "admin_area_1": state,
+          "postal_code": postalCode,
+          "country_code": countryCode,
+        },
+      };
 }

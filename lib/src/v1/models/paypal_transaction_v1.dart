@@ -64,6 +64,7 @@ class PaypalTransactionV1 {
   /// Optional business descriptor shown on the buyer’s bank statement.
   final String? softDescriptor;
 
+  /// Creates a V1 transaction.
   PaypalTransactionV1({
     required this.amount,
     required this.description,
