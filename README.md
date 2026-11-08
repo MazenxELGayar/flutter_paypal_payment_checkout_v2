@@ -39,8 +39,17 @@ Thank you! ❤️🙏
 * 🧪 Sandbox-friendly client-side payments
 * 🎯 Easy success / error / cancellation callbacks
 * 🧰 Integrated WebView + progress indicator
+* 🌍 **Web** checkout (full-page redirect, state kept across it) and **macOS / Windows** support
 * 🛠 Backward compatible with PayPal Payments API V1
 * 🔐 Strong security protections against exposing client secrets
+
+---
+
+# 🖥 Platforms
+
+* **Android / iOS** — in-app `flutter_inappwebview` checkout.
+* **macOS / Windows** — the approval page opens in `webview_flutter`. On **Windows**, add [`webview_win_floating`](https://pub.dev/packages/webview_win_floating) to your app so `webview_flutter` has a WebView2 implementation.
+* **Web** — the browser is redirected to PayPal's approval page and back. Use **HTTPS** return / cancel URLs on your domain (`webDefaultReturnUrl()` / `webDefaultCancelUrl()`), create the order on your backend and capture it there after the redirect.
 
 ---
 
@@ -60,7 +69,7 @@ Flutter code can always be decompiled.
 
 ```yaml
 dependencies:
-  flutter_paypal_payment_checkout_v2: ^2.1.3
+  flutter_paypal_payment_checkout_v2: ^2.2.0
 ```
 
 ```bash

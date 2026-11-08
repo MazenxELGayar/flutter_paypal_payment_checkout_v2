@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:webview_flutter/webview_flutter.dart' as wf;
 import 'package:flutter_paypal_payment_checkout_v2/src/models/paypal_services_base.dart';
 import 'package:flutter_paypal_payment_checkout_v2/src/models/paypal_shared_models.dart';
 import 'package:flutter_paypal_payment_checkout_v2/src/v1/paypal_service_v1.dart';
@@ -42,6 +43,14 @@ class _PaypalCheckoutViewState extends State<PaypalCheckoutView> {
 
   /// Controller for the embedded InAppWebView.
   late InAppWebViewController webView;
+
+  /// macOS / Windows: `webview_flutter` (WKWebView; WebView2 through the app's
+  /// `webview_win_floating`) instead of flutter_inappwebview, whose Windows
+  /// support is still beta.
+  bool get _usesWebViewFlutter =>
+      !kIsWeb &&
+      (defaultTargetPlatform == TargetPlatform.macOS ||
+          defaultTargetPlatform == TargetPlatform.windows);
 
   /// Convenience getter to check if the widget is configured for V1.
   bool get _isV1 => widget.config.version == PayPalApiVersion.v1;
@@ -139,8 +148,7 @@ class _PaypalCheckoutViewState extends State<PaypalCheckoutView> {
           title: Text(widget.config.appBarTitle),
         ),
         body: Center(
-          child:
-              widget.config.loadingIndicator ??
+          child: widget.config.loadingIndicator ??
               const CircularProgressIndicator(),
         ),
       );
@@ -154,52 +162,61 @@ class _PaypalCheckoutViewState extends State<PaypalCheckoutView> {
         centerTitle: true,
         title: Text(widget.config.appBarTitle),
       ),
-      body: Stack(
-        children: <Widget>[
-          InAppWebView(
-            shouldOverrideUrlLoading: (controller, navigationAction) async {
-              final url = navigationAction.request.url;
-              final urlStr = url.toString();
+      body: _usesWebViewFlutter
+          ? _DesktopApprovalWebView(
+              approvalUrl: paymentModel!.approvalUrl,
+              returnURL: paymentModel!.returnURL,
+              cancelURL: paymentModel!.cancelURL,
+              onReturn: (url) => _handleReturnUrl(url, context),
+              onCancel: () => widget.config.onCancel(),
+            )
+          : Stack(
+              children: <Widget>[
+                InAppWebView(
+                  shouldOverrideUrlLoading:
+                      (controller, navigationAction) async {
+                    final url = navigationAction.request.url;
+                    final urlStr = url.toString();
 
-              // Use the URLs coming back from PaypalPaymentModel for both V1 and V2
-              final returnURL = paymentModel!.returnURL;
-              final cancelURL = paymentModel!.cancelURL;
+                    // Use the URLs coming back from PaypalPaymentModel for both V1 and V2
+                    final returnURL = paymentModel!.returnURL;
+                    final cancelURL = paymentModel!.cancelURL;
 
-              if (urlStr.contains(returnURL)) {
-                await _handleReturnUrl(url, context);
-                return NavigationActionPolicy.CANCEL;
-              }
+                    if (urlStr.contains(returnURL)) {
+                      await _handleReturnUrl(url, context);
+                      return NavigationActionPolicy.CANCEL;
+                    }
 
-              if (urlStr.contains(cancelURL)) {
-                widget.config.onCancel();
-                return NavigationActionPolicy.CANCEL;
-              }
+                    if (urlStr.contains(cancelURL)) {
+                      widget.config.onCancel();
+                      return NavigationActionPolicy.CANCEL;
+                    }
 
-              return NavigationActionPolicy.ALLOW;
-            },
-            initialUrlRequest: URLRequest(
-              url: WebUri(paymentModel!.approvalUrl),
+                    return NavigationActionPolicy.ALLOW;
+                  },
+                  initialUrlRequest: URLRequest(
+                    url: WebUri(paymentModel!.approvalUrl),
+                  ),
+                  onWebViewCreated: (controller) {
+                    webView = controller;
+                  },
+                  onCloseWindow: (controller) {
+                    widget.config.onCancel();
+                  },
+                  onProgressChanged: (controller, progress) {
+                    setState(() {
+                      this.progress = progress / 100;
+                    });
+                  },
+                ),
+                progress < 1
+                    ? SizedBox(
+                        height: 3,
+                        child: LinearProgressIndicator(value: progress),
+                      )
+                    : const SizedBox(),
+              ],
             ),
-            onWebViewCreated: (controller) {
-              webView = controller;
-            },
-            onCloseWindow: (controller) {
-              widget.config.onCancel();
-            },
-            onProgressChanged: (controller, progress) {
-              setState(() {
-                this.progress = progress / 100;
-              });
-            },
-          ),
-          progress < 1
-              ? SizedBox(
-                  height: 3,
-                  child: LinearProgressIndicator(value: progress),
-                )
-              : const SizedBox(),
-        ],
-      ),
     );
   }
 
@@ -306,5 +323,80 @@ class _PaypalCheckoutViewState extends State<PaypalCheckoutView> {
     result.fold((error) => widget.config.onError(error), (success) {
       widget.config.onUserPayment(success, model);
     });
+  }
+}
+
+/// The approval page on macOS / Windows (`webview_flutter`). The progress bar
+/// sits above the page: on Windows nothing can be drawn over the WebView.
+class _DesktopApprovalWebView extends StatefulWidget {
+  final String approvalUrl;
+  final String returnURL;
+  final String cancelURL;
+  final Future<void> Function(Uri url) onReturn;
+  final VoidCallback onCancel;
+
+  const _DesktopApprovalWebView({
+    required this.approvalUrl,
+    required this.returnURL,
+    required this.cancelURL,
+    required this.onReturn,
+    required this.onCancel,
+  });
+
+  @override
+  State<_DesktopApprovalWebView> createState() =>
+      _DesktopApprovalWebViewState();
+}
+
+class _DesktopApprovalWebViewState extends State<_DesktopApprovalWebView> {
+  late final wf.WebViewController _controller;
+  double _progress = 0;
+  bool _done = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = wf.WebViewController()
+      ..setJavaScriptMode(wf.JavaScriptMode.unrestricted)
+      ..setNavigationDelegate(
+        wf.NavigationDelegate(
+          onProgress: (progress) {
+            if (mounted) setState(() => _progress = progress / 100);
+          },
+          onNavigationRequest: (request) {
+            final url = request.url;
+            if (url.contains(widget.returnURL)) {
+              if (!_done) {
+                _done = true;
+                widget.onReturn(Uri.parse(url));
+              }
+              return wf.NavigationDecision.prevent;
+            }
+            if (url.contains(widget.cancelURL)) {
+              if (!_done) {
+                _done = true;
+                widget.onCancel();
+              }
+              return wf.NavigationDecision.prevent;
+            }
+            return wf.NavigationDecision.navigate;
+          },
+        ),
+      )
+      ..loadRequest(Uri.parse(widget.approvalUrl));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        SizedBox(
+          height: 3,
+          child:
+              _progress < 1 ? LinearProgressIndicator(value: _progress) : null,
+        ),
+        Expanded(child: wf.WebViewWidget(controller: _controller)),
+      ],
+    );
   }
 }

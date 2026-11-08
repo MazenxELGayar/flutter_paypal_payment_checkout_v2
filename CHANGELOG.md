@@ -6,6 +6,20 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## **2.2.0 — 2026-11-09**
+
+### Web checkout
+
+* `PaypalCheckoutView` now works on **web**: it redirects the browser to PayPal's approval page and, after PayPal redirects back, restores the checkout from `sessionStorage` and finishes through `onUserPayment` / `onCancel` / `onError`.
+* New helpers for HTTPS return / cancel URLs on your domain: `webDefaultReturnUrl()`, `webDefaultCancelUrl()` (query param `paypal_return=success|cancel`).
+* The checkout view is split into mobile / web implementations behind the same `PaypalCheckoutView` API; shared models moved to `src/models`. The web build is chosen with `dart.library.js_interop`, so it also applies to WASM builds.
+
+### Desktop approval page on `webview_flutter`
+
+* On **macOS** and **Windows** the approval page now opens in `webview_flutter` (WKWebView; WebView2 when the app adds `webview_win_floating`) instead of `flutter_inappwebview`, whose Windows support is still beta. Same return / cancel URL handling; the progress bar sits above the page because nothing can be drawn over a WebView2 on Windows. Android, iOS and web are unchanged.
+
+---
+
 ## **2.1.3 — 2026-08-15**
 
 ### Extra error payload (`data`)
