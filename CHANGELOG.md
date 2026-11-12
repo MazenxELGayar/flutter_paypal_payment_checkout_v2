@@ -6,6 +6,16 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## **2.2.2 — 2026-11-12**
+
+### Dropped `flutter_inappwebview`
+
+* The approval page now opens in `webview_flutter` on **Android** and **iOS** too, the same page macOS and Windows already use (same return / cancel URL handling; the progress bar sits above the page).
+* `flutter_inappwebview` is no longer a dependency. Its `flutter_inappwebview_macos 1.2.0-beta.3` failed to compile on newer Xcode (`presentationAnchor(for:)` needs macOS 10.15 but the package targets 10.14), which broke every macOS app that used this package.
+* PayPal closing its window (`window.close()`) no longer calls `onCancel` by itself; the cancel URL still does.
+
+---
+
 ## **2.2.1 — 2026-11-09**
 
 ### Documentation and exports

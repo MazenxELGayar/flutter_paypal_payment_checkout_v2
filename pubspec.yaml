@@ -1,6 +1,6 @@
 name: flutter_paypal_payment_checkout_v2
 description: A powerful, secure PayPal checkout wrapper for Flutter.
-version: 2.2.1
+version: 2.2.2
 homepage: https://github.com/MazenxELGayar/flutter_paypal_payment_checkout_v2
 
 platforms:
@@ -20,8 +20,7 @@ dependencies:
   dartz: ^0.10.1
   flutter:
     sdk: flutter
-  flutter_inappwebview: ^6.2.0-beta.3
-  # macOS / Windows approval page (the app adds webview_win_floating for Windows).
+  # Approval page on Android / iOS / macOS / Windows (the app adds webview_win_floating for Windows).
   webview_flutter: ^4.14.1
   web: ^1.1.1
 
